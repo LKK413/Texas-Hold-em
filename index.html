@@ -106,6 +106,125 @@
         }
         #log-toggle:hover { background: rgba(50, 50, 50, 0.8); }
 
+
+        /* 플레이 로그 상시 표시 패널 */
+        #log-container {
+            width: 320px;
+            min-width: 300px;
+            max-width: 360px;
+            background: linear-gradient(180deg, rgba(22,22,24,0.98), rgba(12,12,14,0.98));
+            border-right: 1px solid rgba(241, 196, 15, 0.28);
+            box-shadow: 8px 0 24px rgba(0,0,0,0.35);
+            white-space: normal;
+        }
+        #log-container.collapsed {
+            width: 320px;
+            min-width: 300px;
+            border-right: 1px solid rgba(241, 196, 15, 0.28);
+        }
+        #log-header {
+            position: relative;
+            padding: 16px 14px 12px;
+            letter-spacing: 0.04em;
+        }
+        #log-header::after {
+            content: "실시간 플레이 로그";
+            display: block;
+            margin-top: 4px;
+            color: #888;
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0;
+        }
+        #log {
+            padding: 12px;
+            font-size: 0.82rem;
+        }
+        .log-entry {
+            max-width: 94%;
+            white-space: normal;
+            word-break: keep-all;
+            overflow-wrap: anywhere;
+            border-left: none;
+            border-radius: 14px 14px 14px 4px;
+            background: rgba(255,255,255,0.06);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+        }
+        .log-action { border-left: none; background: rgba(52, 152, 219, 0.16); }
+        .log-alert { border-left: none; border-radius: 14px; }
+        .log-win { border-left: none; background: rgba(241, 196, 15, 0.16); }
+        #log-toggle, #volume-container, #bgm-toggle-btn, #volume-slider { display: none !important; }
+
+        /* 시작 팝업 가로 스크롤바 방지 보정 */
+        #intro-screen,
+        #intro-screen * {
+            max-width: 100%;
+        }
+
+        .intro-card {
+            min-width: 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .intro-title,
+        .intro-desc,
+        .intro-notice {
+            overflow-wrap: anywhere;
+        }
+
+        .intro-features,
+        .intro-actions,
+        .intro-rules-panel {
+            min-width: 0;
+        }
+
+        .intro-card::-webkit-scrollbar:horizontal {
+            display: none;
+            height: 0;
+        }
+
+        /* 미리보기 환경에서 장식 레이어가 버튼 클릭을 방해하지 않도록 보정 */
+        .intro-actions, .intro-btn, .difficulty-box, #difficulty-select {
+            position: relative;
+            z-index: 3;
+        }
+        #btn-start-game, #btn-intro-rules {
+            pointer-events: auto;
+            touch-action: manipulation;
+        }
+
+
+        @media (max-width: 900px) {
+            #main-container {
+                flex-direction: column;
+                height: auto;
+                min-height: 100dvh;
+            }
+            #game-area {
+                min-height: 72dvh;
+                width: 100%;
+            }
+            #log-container {
+                order: 2;
+                width: 100%;
+                min-width: 0;
+                max-width: none;
+                height: 28dvh;
+                min-height: 190px;
+                border-right: none;
+                border-top: 1px solid rgba(241, 196, 15, 0.28);
+                box-shadow: 0 -8px 24px rgba(0,0,0,0.35);
+            }
+            #log {
+                padding: 10px 12px;
+            }
+            .log-entry {
+                max-width: 100%;
+                padding: 7px 10px;
+                margin-bottom: 5px;
+            }
+        }
+
         /* 족보 가이드 스타일 */
         #rank-guide {
             position: absolute;
@@ -234,12 +353,145 @@
         }
         
         /* 복구된 카드 앞면 스타일 */
-        .card-front { transform: rotateY(180deg); z-index: 1; background: white; }
-        .card-front.red { color: #d63031; }
-        .card-front.black { color: #2d3436; }
-        .card-front .top { align-self: flex-start; }
-        .card-front .bottom { align-self: flex-end; transform: rotate(180deg); }
-        .card-front .center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.2em; }
+        .card-front {
+            transform: rotateY(180deg);
+            z-index: 1;
+            background: linear-gradient(180deg, #ffffff 0%, #f4f4f4 100%);
+            border: 1.5px solid rgba(0, 0, 0, 0.22);
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.75);
+        }
+        .card-front.red { color: #c4162a; }
+        .card-front.black { color: #111827; }
+        .card-front .top,
+        .card-front .bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0px;
+            min-width: 15px;
+            line-height: 0.88;
+            text-shadow: 0 0 0.2px currentColor;
+            z-index: 2;
+        }
+        .card-front .top {
+            align-self: flex-start;
+            font-size: 1.04em;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+        }
+        .card-front .bottom {
+            align-self: flex-end;
+            transform: rotate(180deg);
+            font-size: 1.04em;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+        }
+        .card-front .corner-rank { font-size: 1em; }
+        .card-front .corner-suit { font-size: 0.96em; }
+        .card-front .center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            font-weight: 900;
+            line-height: 0.92;
+            text-align: center;
+            width: 72%;
+            height: 66%;
+        }
+        .card-front .center.numeric .center-rank { font-size: 1.55em; letter-spacing: -0.06em; }
+        .card-front .center.numeric .center-suit { font-size: 1.32em; }
+        .card-front .center.ace .ace-letter {
+            font-size: 1.45em;
+            font-weight: 900;
+            letter-spacing: -0.05em;
+        }
+        .card-front .center.ace .ace-suit {
+            font-size: 2.25em;
+            line-height: 0.9;
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.18));
+        }
+        .card-front .center.face { gap: 3px; }
+        .face-card-art {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .face-card-art svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.14));
+        }
+        .face-rank-badge {
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 18px;
+            padding: 1px 4px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.92);
+            border: 1px solid rgba(0,0,0,0.16);
+            font-size: 0.72em;
+            font-weight: 900;
+            line-height: 1.1;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+        }
+        .face-card-art .banner { fill: rgba(255,255,255,0.78); stroke: rgba(0,0,0,0.14); stroke-width: 1; }
+        .face-card-art .portrait-frame { fill: rgba(255,255,255,0.20); stroke: rgba(0,0,0,0.18); stroke-width: 1.4; }
+        .face-card-art .suit-emblem { opacity: 0.12; }
+        .player-cards .card { width: clamp(42px, 5.8vw, 64px); }
+        .board .card { width: clamp(44px, 6.2vw, 68px); }
+
+        .player-cards,
+        .board {
+            flex-wrap: nowrap;
+            align-items: center;
+            justify-content: center;
+        }
+        @media (max-width: 520px) {
+            .card-front,
+            .card-back {
+                padding: 2px !important;
+                border-radius: 5px !important;
+                font-size: clamp(8px, 2.45vw, 10px) !important;
+            }
+            .card-front .top,
+            .card-front .bottom {
+                min-width: 12px;
+                padding: 1px;
+            }
+            .face-rank-badge {
+                min-width: 16px;
+                font-size: 0.68em;
+            }
+            .player-cards .card { width: clamp(32px, 9.4vw, 43px) !important; min-width: 30px; }
+            .board .card { width: clamp(34px, 10vw, 46px) !important; min-width: 32px; }
+            .board { gap: 4px !important; }
+            .player-cards { gap: 3px !important; }
+        }
+        #raise-status {
+            min-height: 18px;
+            text-align: center;
+            font-size: 0.78em;
+            font-weight: 900;
+            color: var(--gold);
+            letter-spacing: 0.02em;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.85);
+        }
+        #btn-raise.all-in-ready {
+            background: linear-gradient(135deg, #f1c40f, #e67e22) !important;
+            color: #111 !important;
+            box-shadow: 0 0 14px rgba(241,196,15,0.55);
+        }
 
         /* 플레이어 좌석 */
         .seat { position: absolute; background: rgba(0, 0, 0, 0.7); padding: 3px 8px; border-radius: 8px; text-align: center; border: 1px solid #555; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; gap: 2px; }
@@ -706,29 +958,54 @@
         /* 시작 화면 */
         .game-hidden { display: none !important; }
 
+        body.intro-lock {
+            overflow: hidden;
+            height: 100vh;
+        }
+
         #intro-screen {
-            min-height: 100dvh;
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            min-height: 100svh;
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 40px 20px;
+            padding: clamp(14px, 3vw, 40px);
+            overflow: hidden;
             background:
-                radial-gradient(circle at top, rgba(241, 196, 15, 0.16), transparent 32%),
-                radial-gradient(circle at bottom left, rgba(16, 122, 53, 0.35), transparent 38%),
-                linear-gradient(135deg, #111 0%, #1a1a1a 55%, #0b2615 100%);
+                radial-gradient(circle at 18% 14%, rgba(241, 196, 15, 0.16), transparent 28%),
+                radial-gradient(circle at 82% 78%, rgba(16, 122, 53, 0.32), transparent 34%),
+                rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        #intro-screen::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(135deg, rgba(255,255,255,0.04), transparent 32%),
+                radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.38) 72%);
+            pointer-events: none;
         }
 
         .intro-card {
-            width: min(920px, 100%);
-            background: rgba(0, 0, 0, 0.72);
-            border: 1px solid rgba(241, 196, 15, 0.35);
+            width: min(760px, 100%);
+            max-height: calc(100svh - clamp(28px, 6vw, 80px));
+            background: linear-gradient(180deg, rgba(12, 12, 12, 0.96), rgba(4, 4, 4, 0.94));
+            border: 1px solid rgba(241, 196, 15, 0.45);
             border-radius: 28px;
-            padding: 38px;
-            box-shadow: 0 25px 70px rgba(0,0,0,0.55);
+            padding: clamp(22px, 4vw, 38px);
+            box-shadow: 0 25px 90px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.05) inset;
             text-align: center;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            scrollbar-gutter: stable;
         }
 
         .intro-card::before {
@@ -835,6 +1112,12 @@
             border: 1px solid rgba(255,255,255,0.2);
         }
 
+        #intro-screen.intro-closing {
+            opacity: 0;
+            transition: opacity 0.18s ease;
+            pointer-events: none;
+        }
+
         .intro-notice {
             margin: 28px auto 0;
             max-width: 720px;
@@ -842,6 +1125,24 @@
             font-size: 0.9rem;
             line-height: 1.6;
         }
+
+        .intro-rules-panel {
+            display: none;
+            margin: 18px auto 0;
+            max-width: 650px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #d8d8d8;
+            text-align: left;
+            line-height: 1.6;
+            font-size: 0.92rem;
+        }
+        .intro-rules-panel.show { display: block; }
+        .intro-rules-panel strong { color: var(--gold); }
+        .intro-rules-panel ul { margin: 8px 0 0 18px; padding: 0; }
+        .intro-rules-panel li { margin: 5px 0; }
 
 
         @media (max-width: 900px) {
@@ -858,7 +1159,8 @@
 
         @media (max-width: 600px) {
             #intro-screen { padding: 24px 14px; }
-            .intro-card { padding: 28px 18px; border-radius: 22px; }
+            .intro-card { padding: 28px 18px; border-radius: 22px; width: 100%; }
+            .intro-title { font-size: clamp(2.1rem, 14vw, 4.2rem); letter-spacing: -1px; }
             .intro-features { grid-template-columns: 1fr 1fr; gap: 10px; }
             .intro-feature { padding: 14px 8px; font-size: 0.9rem; }
             .intro-actions { flex-direction: column; }
@@ -884,9 +1186,1160 @@
             .card { width: 10vw; max-width: 44px; } .card-front, .card-back { font-size: 0.7em; }
             #raise-slider { width: 70px !important; } #raise-input { width: 60px !important; }
         }
-    </style>
+
+        /* 최종 로그 패널 보정: 햄버거 없이 항상 표시 */
+        #log-container { display: flex !important; }
+        @media (max-width: 900px) {
+            #log-container {
+                position: relative !important;
+                z-index: 1 !important;
+                width: 100% !important;
+                min-width: 0 !important;
+                max-width: none !important;
+                height: 28dvh !important;
+                margin-left: 0 !important;
+            }
+        }
+        @media (max-width: 600px) and (orientation: portrait) {
+            #main-container { height: auto !important; min-height: 100dvh; }
+            #game-area { min-height: 72dvh; padding-bottom: 138px; }
+            #log-container { height: 28dvh !important; min-height: 180px; }
+        }
+
+    
+
+        /* =========================================================
+           최종 반응형 레이아웃 보정
+           - 데스크톱 / 작은 창 / 모바일 세로 / 모바일 가로 화면 유지
+           - 좌석, 테이블, 조작 버튼, 로그 패널 비율 안정화
+        ========================================================= */
+        html {
+            width: 100%;
+            min-height: 100%;
+            overflow-x: hidden;
+        }
+        body {
+            width: 100%;
+            min-height: 100dvh;
+            overflow-x: hidden;
+        }
+        #main-container {
+            display: grid !important;
+            grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+            grid-template-rows: 1fr;
+            width: 100% !important;
+            height: 100dvh !important;
+            min-height: 620px;
+            overflow: hidden;
+        }
+        #log-container {
+            position: relative !important;
+            grid-column: 1;
+            grid-row: 1;
+            width: auto !important;
+            min-width: 0 !important;
+            max-width: none !important;
+            height: 100% !important;
+            min-height: 0 !important;
+            z-index: 10 !important;
+            flex-shrink: 0;
+        }
+        #log-header { flex: 0 0 auto; }
+        #log {
+            min-height: 0;
+            overflow-y: auto;
+        }
+        #game-area {
+            grid-column: 2;
+            grid-row: 1;
+            width: 100% !important;
+            height: 100% !important;
+            min-width: 0;
+            min-height: 0 !important;
+            padding: clamp(76px, 8vh, 104px) clamp(150px, 12vw, 220px) clamp(150px, 17vh, 230px) !important;
+            overflow: auto !important;
+            justify-content: center !important;
+            align-items: center !important;
+        }
+        .game-hud {
+            max-width: calc(100% - 28px) !important;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .game-hud::-webkit-scrollbar { display: none; }
+        .table {
+            width: clamp(500px, 56vw, 900px) !important;
+            height: clamp(260px, 38vh, 420px) !important;
+            min-width: 0 !important;
+            min-height: 0 !important;
+            margin: clamp(130px, 17vh, 200px) 0 clamp(175px, 21vh, 250px) 0 !important;
+            flex: 0 0 auto;
+        }
+        #seat-2 { top: clamp(-220px, -18vh, -158px) !important; left: 50% !important; transform: translateX(-50%) !important; }
+        #seat-0 { bottom: clamp(-260px, -23vh, -190px) !important; left: 50% !important; transform: translateX(-50%) !important; }
+        #seat-1 { left: clamp(-200px, -12vw, -138px) !important; top: 50% !important; transform: translateY(-50%) !important; }
+        #seat-3 { right: clamp(-200px, -12vw, -138px) !important; top: 50% !important; transform: translateY(-50%) !important; }
+        #seat-0.active { transform: translateX(-50%) scale(1.05) !important; }
+        #seat-2.active { transform: translateX(-50%) scale(1.05) !important; }
+        #seat-1.active, #seat-3.active { transform: translateY(-50%) scale(1.05) !important; }
+        #seat-0.winner { transform: translateX(-50%) scale(1.1) !important; }
+        #seat-2.winner { transform: translateX(-50%) scale(1.1) !important; }
+        #seat-1.winner, #seat-3.winner { transform: translateY(-50%) scale(1.1) !important; }
+        .controls {
+            max-width: min(760px, calc(100% - 24px)) !important;
+            bottom: clamp(10px, 2vh, 22px) !important;
+        }
+        .board {
+            min-width: clamp(240px, 32vw, 390px) !important;
+            max-width: 92%;
+        }
+        .card {
+            width: clamp(38px, 4.5vw, 60px) !important;
+            max-width: 60px !important;
+        }
+
+        @media (max-width: 1180px) and (min-width: 901px) {
+            #main-container { grid-template-columns: minmax(250px, 290px) minmax(0, 1fr); }
+            #game-area { padding-left: clamp(112px, 12vw, 155px) !important; padding-right: clamp(112px, 12vw, 155px) !important; }
+            .table { width: clamp(430px, 52vw, 650px) !important; height: clamp(240px, 36vh, 350px) !important; }
+            .seat { min-width: 112px !important; }
+            #seat-1 { left: clamp(-158px, -12vw, -122px) !important; }
+            #seat-3 { right: clamp(-158px, -12vw, -122px) !important; }
+        }
+
+        @media (max-height: 720px) and (min-width: 901px) {
+            #main-container { min-height: 540px; }
+            #game-area { padding-top: 60px !important; padding-bottom: 122px !important; }
+            .game-hud { top: 10px !important; }
+            .table {
+                height: clamp(210px, 34vh, 300px) !important;
+                margin-top: clamp(100px, 15vh, 135px) !important;
+                margin-bottom: clamp(130px, 19vh, 170px) !important;
+            }
+            #seat-2 { top: clamp(-160px, -18vh, -118px) !important; }
+            #seat-0 { bottom: clamp(-190px, -23vh, -145px) !important; }
+        }
+
+        @media (max-width: 900px) {
+            #main-container {
+                grid-template-columns: 1fr !important;
+                grid-template-rows: minmax(0, 1fr) clamp(170px, 27dvh, 240px) !important;
+                height: 100dvh !important;
+                min-height: 620px;
+                overflow: hidden;
+            }
+            #game-area {
+                grid-column: 1;
+                grid-row: 1;
+                min-height: 0 !important;
+                height: 100% !important;
+                padding: 76px clamp(118px, 14vw, 145px) 118px !important;
+                overflow: hidden !important;
+            }
+            #log-container {
+                grid-column: 1;
+                grid-row: 2;
+                width: 100% !important;
+                height: 100% !important;
+                min-height: 0 !important;
+                border-right: none !important;
+                border-top: 1px solid rgba(241, 196, 15, 0.28) !important;
+            }
+            #log-header { padding: 10px 12px 8px !important; font-size: 1rem !important; }
+            #log { padding: 8px 10px !important; font-size: 0.78rem !important; }
+            .log-entry { padding: 7px 10px !important; margin-bottom: 5px !important; }
+            .game-hud {
+                top: 8px !important;
+                left: 8px !important;
+                right: 8px !important;
+                width: auto !important;
+                transform: none !important;
+                justify-content: flex-start !important;
+                flex-wrap: nowrap !important;
+            }
+            #rank-guide-toggle { top: 52px !important; right: 8px !important; }
+            .table {
+                width: min(68vw, 560px) !important;
+                height: clamp(210px, 34dvh, 320px) !important;
+                margin: clamp(105px, 15dvh, 135px) 0 clamp(120px, 18dvh, 165px) 0 !important;
+            }
+            .seat { min-width: 104px !important; max-width: 126px !important; padding: 5px 7px !important; }
+            #seat-2 { top: clamp(-145px, -17dvh, -112px) !important; }
+            #seat-0 { bottom: clamp(-170px, -20dvh, -130px) !important; }
+            #seat-1 { left: clamp(-130px, -13vw, -92px) !important; top: 50% !important; transform: translateY(-50%) !important; }
+            #seat-3 { right: clamp(-130px, -13vw, -92px) !important; top: 50% !important; transform: translateY(-50%) !important; }
+            .controls { bottom: 8px !important; width: min(760px, calc(100% - 16px)) !important; }
+            .controls button { padding: 8px 10px !important; font-size: 0.86rem !important; }
+        }
+
+        @media (max-width: 600px) and (orientation: portrait) {
+            #main-container {
+                grid-template-rows: minmax(0, 1fr) clamp(155px, 24dvh, 205px) !important;
+                min-height: 100dvh !important;
+            }
+            #game-area {
+                padding: 74px 8px 108px !important;
+            }
+            .game-hud {
+                padding: 6px !important;
+                gap: 5px !important;
+            }
+            .hud-pill { font-size: 0.64rem !important; padding: 4px 6px !important; }
+            .hud-action-btn { font-size: 0.68rem !important; padding: 4px 8px !important; }
+            #rank-guide-toggle { top: 56px !important; right: 8px !important; padding: 5px 8px !important; font-size: 0.72rem !important; }
+            .table {
+                width: min(94vw, 420px) !important;
+                height: clamp(160px, 24dvh, 225px) !important;
+                border-width: 9px !important;
+                border-radius: 86px !important;
+                margin: clamp(116px, 15dvh, 140px) 0 clamp(138px, 18dvh, 168px) 0 !important;
+            }
+            .table::before {
+                bottom: 24px !important;
+                font-size: clamp(0.68rem, 2.8vw, 0.9rem) !important;
+                letter-spacing: 0.1em !important;
+            }
+            .table::after { inset: 10px !important; border-radius: 76px !important; }
+            .pot-area { min-width: 104px !important; padding: 5px 10px !important; margin-bottom: 6px !important; font-size: 0.82rem !important; }
+            .board {
+                min-width: min(205px, 66vw) !important;
+                min-height: 56px !important;
+                padding: 5px !important;
+                gap: 4px !important;
+            }
+            .card { width: clamp(29px, 9vw, 39px) !important; max-width: 39px !important; }
+            .card-front, .card-back { font-size: 0.62em !important; }
+            .seat {
+                min-width: 82px !important;
+                max-width: 96px !important;
+                padding: 4px 5px !important;
+                border-radius: 11px !important;
+            }
+            .seat .name { font-size: 0.62rem !important; }
+            .seat .chips, .seat .bet, .seat .last-action { font-size: 0.58rem !important; }
+            .player-cards { gap: 2px !important; margin-top: 2px !important; }
+            #seat-2 { top: -112px !important; left: 50% !important; transform: translateX(-50%) !important; }
+            #seat-1 { top: -52px !important; left: 3px !important; transform: none !important; }
+            #seat-3 { top: -52px !important; right: 3px !important; transform: none !important; }
+            #seat-0 { bottom: -132px !important; left: 50% !important; transform: translateX(-50%) !important; }
+            #seat-1.active, #seat-3.active { transform: scale(1.03) !important; }
+            #seat-1.winner, #seat-3.winner { transform: scale(1.06) !important; }
+            #seat-0.active, #seat-2.active { transform: translateX(-50%) scale(1.03) !important; }
+            #seat-0.winner, #seat-2.winner { transform: translateX(-50%) scale(1.06) !important; }
+            .controls {
+                bottom: 6px !important;
+                left: 50% !important;
+                width: calc(100% - 12px) !important;
+                max-width: none !important;
+                padding: 6px !important;
+                gap: 5px !important;
+                border-radius: 16px !important;
+            }
+            .controls button { flex: 1 1 42% !important; padding: 8px 6px !important; font-size: 0.76rem !important; }
+            .controls > div { width: 100% !important; padding-left: 0 !important; border-left: none !important; gap: 6px !important; justify-content: center !important; }
+            #raise-slider { width: 42vw !important; }
+            #raise-input { width: 68px !important; }
+            .mobile-turn-panel { bottom: 82px !important; font-size: 0.68rem !important; max-width: calc(100% - 16px); overflow: hidden; text-overflow: ellipsis; }
+            #log-header::after { display: none !important; }
+        }
+
+        @media (max-height: 500px) and (orientation: landscape) {
+            #main-container {
+                grid-template-columns: minmax(220px, 260px) minmax(0, 1fr) !important;
+                grid-template-rows: 1fr !important;
+                min-height: 360px !important;
+            }
+            #log-container {
+                grid-column: 1 !important;
+                grid-row: 1 !important;
+                height: 100% !important;
+                border-top: none !important;
+                border-right: 1px solid rgba(241, 196, 15, 0.28) !important;
+            }
+            #game-area {
+                grid-column: 2 !important;
+                grid-row: 1 !important;
+                padding: 48px 95px 76px !important;
+                overflow: hidden !important;
+            }
+            .game-hud { top: 6px !important; left: 8px !important; right: 8px !important; }
+            .hud-pill { font-size: 0.62rem !important; padding: 3px 6px !important; }
+            .hud-action-btn { padding: 3px 8px !important; font-size: 0.66rem !important; }
+            #rank-guide-toggle { top: 44px !important; right: 8px !important; padding: 4px 8px !important; font-size: 0.68rem !important; }
+            .table {
+                width: min(52vw, 520px) !important;
+                height: clamp(145px, 42vh, 215px) !important;
+                margin: 70px 0 82px !important;
+            }
+            .table::before { bottom: 18px !important; font-size: 0.72rem !important; }
+            .board { min-width: 210px !important; min-height: 52px !important; padding: 5px !important; gap: 4px !important; }
+            .card { width: clamp(30px, 4vw, 42px) !important; }
+            .seat { min-width: 88px !important; max-width: 108px !important; padding: 4px 6px !important; }
+            .seat .name { font-size: 0.62rem !important; }
+            .seat .chips, .seat .bet, .seat .last-action { font-size: 0.58rem !important; }
+            #seat-2 { top: -86px !important; }
+            #seat-0 { bottom: -96px !important; }
+            #seat-1 { left: -98px !important; }
+            #seat-3 { right: -98px !important; }
+            .controls { bottom: 5px !important; padding: 5px !important; gap: 5px !important; }
+            .controls button { padding: 6px 8px !important; font-size: 0.72rem !important; }
+        }
+
+
+        /* =========================================================
+           FINAL LAYOUT PATCH: mobile + window compatibility
+           - Keeps the game readable across desktop windowed mode,
+             tablets, mobile portrait, and mobile landscape.
+           - Uses scroll instead of squeezing when the viewport is tiny.
+           ========================================================= */
+        html {
+            min-width: 320px;
+            background: #111;
+        }
+
+        body {
+            min-width: 320px;
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+        }
+
+        #main-container:not(.game-hidden) {
+            display: grid !important;
+            grid-template-columns: clamp(260px, 24vw, 340px) minmax(0, 1fr) !important;
+            width: 100% !important;
+            min-height: calc(var(--app-vh, 1vh) * 100) !important;
+            height: auto !important;
+            background: #141414;
+            overflow: visible !important;
+        }
+
+        #log-container {
+            position: sticky !important;
+            top: 0 !important;
+            left: auto !important;
+            width: auto !important;
+            min-width: 0 !important;
+            height: calc(var(--app-vh, 1vh) * 100) !important;
+            max-height: calc(var(--app-vh, 1vh) * 100) !important;
+            display: flex !important;
+            flex-direction: column !important;
+            border-right: 1px solid rgba(255,255,255,0.12) !important;
+            box-shadow: 8px 0 28px rgba(0,0,0,0.25) !important;
+            z-index: 10 !important;
+        }
+
+        #log {
+            white-space: normal !important;
+            word-break: keep-all !important;
+            overflow-wrap: anywhere !important;
+        }
+
+        #game-area {
+            min-width: 0 !important;
+            width: 100% !important;
+            min-height: calc(var(--app-vh, 1vh) * 100) !important;
+            height: auto !important;
+            padding: clamp(76px, 8vh, 112px) clamp(150px, 15vw, 230px) clamp(126px, 14vh, 178px) !important;
+            overflow: hidden !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        .game-hud {
+            top: 12px !important;
+            left: max(12px, env(safe-area-inset-left)) !important;
+            right: max(12px, env(safe-area-inset-right)) !important;
+            width: auto !important;
+            max-width: none !important;
+            justify-content: center !important;
+            flex-wrap: wrap !important;
+            overflow: visible !important;
+        }
+
+        .hud-pill,
+        .hud-action-btn {
+            white-space: nowrap !important;
+        }
+
+        .table {
+            width: clamp(500px, 58vw, 820px) !important;
+            height: clamp(250px, 38vh, 380px) !important;
+            max-width: 100% !important;
+            max-height: none !important;
+            margin: 0 !important;
+            flex: 0 0 auto !important;
+            border-radius: 999px !important;
+        }
+
+        .table::before {
+            bottom: clamp(42px, 7vh, 72px) !important;
+            font-size: clamp(1rem, 1.55vw, 1.5rem) !important;
+            letter-spacing: clamp(1px, 0.4vw, 4px) !important;
+            opacity: 0.2 !important;
+            pointer-events: none !important;
+        }
+
+        .seat {
+            min-width: clamp(112px, 12vw, 144px) !important;
+            max-width: 160px !important;
+            padding: 7px 10px !important;
+            font-size: clamp(0.76rem, 0.78vw, 0.88rem) !important;
+            backdrop-filter: blur(8px) !important;
+        }
+
+        #seat-2 { top: clamp(-196px, -17vh, -142px) !important; left: 50% !important; transform: translateX(-50%) !important; }
+        #seat-0 { bottom: clamp(-232px, -21vh, -172px) !important; left: 50% !important; transform: translateX(-50%) !important; }
+        #seat-1 { left: clamp(-172px, -13vw, -126px) !important; top: 50% !important; transform: translateY(-50%) !important; }
+        #seat-3 { right: clamp(-172px, -13vw, -126px) !important; top: 50% !important; transform: translateY(-50%) !important; }
+
+        #seat-0.active, #seat-2.active { transform: translateX(-50%) scale(1.04) !important; }
+        #seat-1.active, #seat-3.active { transform: translateY(-50%) scale(1.04) !important; }
+        #seat-0.winner, #seat-2.winner { transform: translateX(-50%) scale(1.08) !important; }
+        #seat-1.winner, #seat-3.winner { transform: translateY(-50%) scale(1.08) !important; }
+
+        .card {
+            width: clamp(38px, 4.4vw, 60px) !important;
+        }
+
+        .board {
+            gap: clamp(5px, 1vw, 10px) !important;
+            min-height: clamp(62px, 10vh, 90px) !important;
+        }
+
+        .controls {
+            position: absolute !important;
+            left: 50% !important;
+            right: auto !important;
+            bottom: max(14px, env(safe-area-inset-bottom)) !important;
+            transform: translateX(-50%) !important;
+            width: min(760px, calc(100% - 28px)) !important;
+            max-width: 760px !important;
+            padding: 9px 12px !important;
+            gap: 8px !important;
+            align-items: center !important;
+        }
+
+        .controls button {
+            min-height: 42px !important;
+            padding: 8px 14px !important;
+            font-size: clamp(0.82rem, 1vw, 1rem) !important;
+        }
+
+        #rank-guide-toggle {
+            top: auto !important;
+            bottom: max(76px, calc(env(safe-area-inset-bottom) + 76px)) !important;
+            right: max(12px, env(safe-area-inset-right)) !important;
+        }
+
+        #rank-guide {
+            top: 68px !important;
+            right: max(12px, env(safe-area-inset-right)) !important;
+            max-height: min(76vh, 620px) !important;
+            overflow-y: auto !important;
+        }
+
+        .adsbygoogle {
+            min-height: 90px;
+        }
+
+        /* Medium windowed desktop: reduce side distance before things collide. */
+        @media (max-width: 1180px) and (min-width: 901px) {
+            #main-container:not(.game-hidden) {
+                grid-template-columns: clamp(240px, 27vw, 300px) minmax(0, 1fr) !important;
+            }
+
+            #game-area {
+                padding-left: clamp(116px, 13vw, 160px) !important;
+                padding-right: clamp(116px, 13vw, 160px) !important;
+            }
+
+            .table {
+                width: clamp(430px, 54vw, 650px) !important;
+                height: clamp(230px, 34vh, 340px) !important;
+            }
+
+            #seat-1 { left: clamp(-138px, -12vw, -104px) !important; }
+            #seat-3 { right: clamp(-138px, -12vw, -104px) !important; }
+        }
+
+        /* Short desktop windows: allow a small vertical scroll rather than crushing seats. */
+        @media (min-width: 901px) and (max-height: 700px) {
+            #main-container:not(.game-hidden) {
+                min-height: 620px !important;
+            }
+
+            #log-container {
+                height: 100vh !important;
+                max-height: 100vh !important;
+            }
+
+            #game-area {
+                min-height: 620px !important;
+                padding-top: 76px !important;
+                padding-bottom: 116px !important;
+            }
+
+            .table {
+                height: 260px !important;
+            }
+
+            #seat-2 { top: -132px !important; }
+            #seat-0 { bottom: -156px !important; }
+        }
+
+        /* Tablet and mobile: stack the game and log. Game first, log below. */
+        @media (max-width: 900px) {
+            #main-container:not(.game-hidden) {
+                display: flex !important;
+                flex-direction: column !important;
+                min-height: auto !important;
+                height: auto !important;
+                overflow: visible !important;
+            }
+
+            #game-area {
+                order: 1 !important;
+                min-height: 720px !important;
+                height: auto !important;
+                padding: 88px 118px 132px !important;
+                overflow: hidden !important;
+            }
+
+            #log-container {
+                order: 2 !important;
+                position: relative !important;
+                width: 100% !important;
+                height: 240px !important;
+                max-height: 240px !important;
+                min-height: 220px !important;
+                border-right: none !important;
+                border-top: 1px solid rgba(255,255,255,0.12) !important;
+                box-shadow: 0 -8px 24px rgba(0,0,0,0.28) !important;
+                z-index: 3 !important;
+            }
+
+            .game-hud {
+                top: 10px !important;
+                gap: 6px !important;
+                padding: 7px !important;
+            }
+
+            .hud-pill,
+            .hud-action-btn {
+                font-size: 0.78rem !important;
+                padding: 6px 8px !important;
+            }
+
+            .table {
+                width: min(72vw, 560px) !important;
+                height: clamp(230px, 30vh, 320px) !important;
+                border-width: 10px !important;
+            }
+
+            #seat-2 { top: -136px !important; }
+            #seat-0 { bottom: -154px !important; }
+            #seat-1 { left: -104px !important; }
+            #seat-3 { right: -104px !important; }
+
+            .quick-help,
+            .decor-card,
+            .decor-chip,
+            .table-light {
+                display: none !important;
+            }
+
+            .controls {
+                width: min(720px, calc(100% - 16px)) !important;
+                bottom: max(10px, env(safe-area-inset-bottom)) !important;
+                padding: 7px !important;
+            }
+
+            .controls button {
+                min-height: 40px !important;
+                padding: 8px 10px !important;
+                font-size: 0.82rem !important;
+            }
+        }
+
+        /* Mobile portrait final layout: stable and scrollable, not squeezed. */
+        @media (max-width: 600px) and (orientation: portrait) {
+            body {
+                background: #111 !important;
+            }
+
+            #intro-screen {
+                min-height: calc(var(--app-vh, 1vh) * 100) !important;
+                padding: 18px 12px calc(18px + env(safe-area-inset-bottom)) !important;
+            }
+
+            .intro-card {
+                width: min(100%, 420px) !important;
+                padding: 24px 16px !important;
+            }
+
+            .intro-title { font-size: clamp(2rem, 10vw, 3rem) !important; }
+            .intro-desc { font-size: 0.96rem !important; }
+            .intro-features { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+            .intro-feature { min-height: 70px !important; }
+
+            #game-area {
+                min-height: 660px !important;
+                padding: 76px 8px 112px !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+
+            .game-hud {
+                top: 8px !important;
+                left: 6px !important;
+                right: 6px !important;
+                justify-content: center !important;
+                padding: 6px !important;
+                border-radius: 14px !important;
+            }
+
+            .hud-pill,
+            .hud-action-btn {
+                font-size: 0.68rem !important;
+                padding: 5px 6px !important;
+                border-radius: 999px !important;
+            }
+
+            .table {
+                width: min(86vw, 380px) !important;
+                height: 220px !important;
+                border-width: 8px !important;
+                border-radius: 95px !important;
+                transform: translateY(16px) !important;
+            }
+
+            .table::before {
+                bottom: 32px !important;
+                font-size: 0.9rem !important;
+                letter-spacing: 1px !important;
+                opacity: 0.18 !important;
+                width: 78% !important;
+            }
+
+            .table::after {
+                inset: 10px !important;
+                border-radius: 78px !important;
+            }
+
+            .pot-area {
+                font-size: 0.86rem !important;
+                margin-bottom: 6px !important;
+            }
+
+            .board {
+                gap: 4px !important;
+                min-height: 56px !important;
+            }
+
+            .card {
+                width: clamp(30px, 10vw, 42px) !important;
+            }
+
+            .card-front,
+            .card-back {
+                font-size: 0.62rem !important;
+                border-radius: 5px !important;
+            }
+
+            .seat {
+                min-width: 96px !important;
+                max-width: 108px !important;
+                padding: 5px 6px !important;
+                border-radius: 10px !important;
+                font-size: 0.66rem !important;
+                gap: 1px !important;
+            }
+
+            .seat .name { font-size: 0.68rem !important; }
+            .seat .chips, .seat .bet, .seat .last-action { font-size: 0.62rem !important; }
+            .player-cards { gap: 3px !important; margin-top: 3px !important; }
+
+            #seat-2 {
+                top: -110px !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+            }
+
+            #seat-1 {
+                top: -50px !important;
+                left: -2px !important;
+                transform: none !important;
+            }
+
+            #seat-3 {
+                top: -50px !important;
+                right: -2px !important;
+                transform: none !important;
+            }
+
+            #seat-0 {
+                bottom: -132px !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+            }
+
+            #seat-0.active,
+            #seat-2.active { transform: translateX(-50%) scale(1.03) !important; }
+            #seat-1.active,
+            #seat-3.active { transform: scale(1.03) !important; }
+            #seat-0.winner,
+            #seat-2.winner { transform: translateX(-50%) scale(1.06) !important; }
+            #seat-1.winner,
+            #seat-3.winner { transform: scale(1.06) !important; }
+
+            .speech-bubble {
+                top: -24px !important;
+                font-size: 0.66rem !important;
+                padding: 4px 7px !important;
+            }
+
+            .dealer-btn {
+                width: 22px !important;
+                height: 22px !important;
+                line-height: 20px !important;
+                font-size: 0.7rem !important;
+                top: -11px !important;
+                left: -11px !important;
+            }
+
+            .winner-badge {
+                top: -28px !important;
+                font-size: 0.62rem !important;
+                padding: 3px 8px !important;
+            }
+
+            .controls {
+                width: calc(100% - 12px) !important;
+                max-width: 420px !important;
+                bottom: max(8px, env(safe-area-inset-bottom)) !important;
+                padding: 6px !important;
+                gap: 5px !important;
+                border-radius: 14px !important;
+            }
+
+            .controls button {
+                flex: 1 1 42% !important;
+                min-height: 38px !important;
+                padding: 7px 5px !important;
+                font-size: 0.72rem !important;
+            }
+
+            .controls > div {
+                width: 100% !important;
+                padding-left: 0 !important;
+                border-left: 0 !important;
+                gap: 5px !important;
+                justify-content: center !important;
+            }
+
+            #raise-slider { width: min(42vw, 160px) !important; }
+            #raise-input { width: 70px !important; height: 28px !important; font-size: 0.72rem !important; }
+
+            #rank-guide-toggle {
+                bottom: auto !important;
+                top: 56px !important;
+                right: 8px !important;
+                padding: 5px 8px !important;
+                font-size: 0.7rem !important;
+            }
+
+            #rank-guide {
+                top: 88px !important;
+                right: 8px !important;
+                left: 8px !important;
+                width: auto !important;
+                max-height: 58vh !important;
+                font-size: 0.76rem !important;
+            }
+
+            #log-container {
+                height: 220px !important;
+                max-height: 220px !important;
+                min-height: 220px !important;
+            }
+
+            #log-header {
+                padding: 10px !important;
+                font-size: 0.95rem !important;
+            }
+
+            #log {
+                padding: 8px !important;
+                font-size: 0.76rem !important;
+            }
+
+            .log-entry {
+                margin-bottom: 5px !important;
+                padding: 7px 9px !important;
+            }
+        }
+
+        /* Very narrow phones: make the table a little smaller and keep controls usable. */
+        @media (max-width: 380px) and (orientation: portrait) {
+            #game-area {
+                min-height: 632px !important;
+            }
+
+            .table {
+                width: 84vw !important;
+                height: 205px !important;
+            }
+
+            .seat {
+                min-width: 88px !important;
+                max-width: 98px !important;
+                font-size: 0.62rem !important;
+            }
+
+            #seat-1 { left: -4px !important; }
+            #seat-3 { right: -4px !important; }
+            #seat-0 { bottom: -124px !important; }
+            #seat-2 { top: -104px !important; }
+            .controls button { font-size: 0.68rem !important; }
+        }
+
+        /* Mobile landscape: compact side-by-side. */
+        @media (max-height: 520px) and (orientation: landscape) {
+            #main-container:not(.game-hidden) {
+                display: grid !important;
+                grid-template-columns: 220px minmax(0, 1fr) !important;
+                min-height: 520px !important;
+            }
+
+            #log-container {
+                position: sticky !important;
+                top: 0 !important;
+                order: initial !important;
+                height: 100vh !important;
+                max-height: 100vh !important;
+                min-height: 520px !important;
+                border-top: none !important;
+                border-right: 1px solid rgba(255,255,255,0.12) !important;
+            }
+
+            #game-area {
+                min-height: 520px !important;
+                padding: 54px 100px 82px !important;
+            }
+
+            .game-hud {
+                top: 6px !important;
+                left: 8px !important;
+                right: 8px !important;
+            }
+
+            .hud-pill,
+            .hud-action-btn {
+                font-size: 0.66rem !important;
+                padding: 4px 6px !important;
+            }
+
+            .table {
+                width: min(54vw, 430px) !important;
+                height: 190px !important;
+                border-width: 8px !important;
+            }
+
+            .table::before { bottom: 22px !important; font-size: 0.72rem !important; }
+            .seat { min-width: 92px !important; font-size: 0.62rem !important; padding: 4px 6px !important; }
+            #seat-2 { top: -82px !important; }
+            #seat-0 { bottom: -92px !important; }
+            #seat-1 { left: -92px !important; }
+            #seat-3 { right: -92px !important; }
+            .card { width: 28px !important; }
+            .controls { bottom: 5px !important; padding: 5px !important; gap: 5px !important; }
+            .controls button { min-height: 32px !important; padding: 5px 8px !important; font-size: 0.68rem !important; }
+            #rank-guide-toggle { top: auto !important; bottom: 54px !important; right: 8px !important; font-size: 0.68rem !important; }
+        }
+
+
+
+        /* =========================================================
+           TOP ALIGNMENT HOTFIX
+           - Fixes the crooked top HUD in desktop/windowed mode.
+           - Keeps mobile HUD full-width and stable.
+           ========================================================= */
+        @media (min-width: 901px) {
+            .game-hud {
+                top: 14px !important;
+                left: 50% !important;
+                right: auto !important;
+                transform: translateX(-50%) !important;
+                width: max-content !important;
+                max-width: calc(100% - 32px) !important;
+                justify-content: center !important;
+                flex-wrap: wrap !important;
+                margin: 0 auto !important;
+            }
+
+            #game-area {
+                position: relative !important;
+                overflow: hidden !important;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .game-hud {
+                left: 8px !important;
+                right: 8px !important;
+                transform: none !important;
+                width: auto !important;
+                max-width: none !important;
+                margin: 0 !important;
+            }
+        }
+
+        @media (max-width: 600px) and (orientation: portrait) {
+            .game-hud {
+                top: 8px !important;
+                left: 6px !important;
+                right: 6px !important;
+                transform: none !important;
+                width: auto !important;
+            }
+        }
+
+    
+
+        /* 쇼다운 승리 패 하이라이트 연출 - 겹침/뒷면 문제 수정 */
+        .card.winning-card {
+            position: relative;
+            z-index: 220 !important;
+            animation: winning-card-float 0.95s ease-in-out infinite alternate;
+            will-change: transform;
+        }
+        .card.winning-card .card-inner {
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.95)) drop-shadow(0 0 22px rgba(255, 190, 0, 0.75));
+        }
+        /* 승리 카드는 3D 뒤집기 구조를 쓰지 않고 앞면만 강제로 보여줍니다. */
+        .card.force-face-up .card-inner,
+        .card.winning-card.force-face-up .card-inner,
+        .card.winning-card.revealed.force-face-up .card-inner {
+            transform: none !important;
+        }
+        .card.force-face-up .card-back,
+        .card.winning-card.force-face-up .card-back {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+        }
+        .card.force-face-up .card-front,
+        .card.winning-card.force-face-up .card-front {
+            transform: none !important;
+            backface-visibility: visible !important;
+            -webkit-backface-visibility: visible !important;
+            z-index: 5 !important;
+            outline: 3px solid rgba(255, 215, 0, 0.95);
+            box-shadow: inset 0 0 16px rgba(255, 215, 0, 0.58), 0 0 18px rgba(255, 215, 0, 0.85);
+        }
+        @keyframes winning-card-float {
+            from { transform: translateY(0); }
+            to { transform: translateY(-12px); }
+        }
+        .seat.showdown-highlight .winner-badge {
+            display: none !important;
+        }
+        .winning-hand-float {
+            position: absolute;
+            left: 50%;
+            top: 12px;
+            transform: translateX(-50%);
+            padding: 8px 16px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #ffd21a, #ff9f1a);
+            color: #121212;
+            border: 2px solid rgba(255, 255, 255, 0.75);
+            box-shadow: 0 0 20px rgba(255, 210, 26, 1), 0 10px 24px rgba(0,0,0,0.5);
+            font-weight: 900;
+            font-size: 0.92rem;
+            white-space: nowrap;
+            z-index: 10050;
+            pointer-events: none;
+            animation: winning-label-bob 0.9s ease-in-out infinite alternate;
+        }
+        @keyframes winning-label-bob {
+            from { transform: translateX(-50%) translateY(0) scale(1); }
+            to { transform: translateX(-50%) translateY(-9px) scale(1.04); }
+        }
+        @media (max-width: 600px) {
+            .winning-hand-float {
+                padding: 6px 11px;
+                font-size: 0.72rem;
+                max-width: calc(100vw - 24px);
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            @keyframes winning-card-float {
+                from { transform: translateY(0); }
+                to { transform: translateY(-7px); }
+            }
+        }
+
+        /* =========================================================
+           FINAL WINDOW MODE + BETTING BAR FIX
+           - Prevent cards from breaking in small desktop windows.
+           - Keeps the action/betting bar visible by using sticky/fixed positioning
+             depending on viewport.
+           ========================================================= */
+        .card {
+            aspect-ratio: 2 / 3 !important;
+            flex: 0 0 auto !important;
+            contain: layout paint;
+        }
+        .card-inner,
+        .card-front,
+        .card-back {
+            width: 100% !important;
+            height: 100% !important;
+            min-width: 0 !important;
+            min-height: 0 !important;
+        }
+        .player-cards,
+        .board {
+            flex-wrap: nowrap !important;
+            overflow: visible !important;
+            max-width: 100% !important;
+        }
+        .board .card {
+            width: clamp(34px, 4.2vw, 62px) !important;
+            min-width: 30px !important;
+            max-width: 62px !important;
+        }
+        .player-cards .card {
+            width: clamp(32px, 3.9vw, 56px) !important;
+            min-width: 28px !important;
+            max-width: 56px !important;
+        }
+        .card-front,
+        .card-back {
+            font-size: clamp(8px, 0.82vw, 13px) !important;
+            padding: clamp(2px, 0.35vw, 4px) !important;
+            overflow: hidden !important;
+        }
+
+        @media (min-width: 901px) {
+            #game-area {
+                padding-bottom: 118px !important;
+                overflow: hidden !important;
+            }
+            .controls {
+                position: fixed !important;
+                left: calc(var(--log-panel-width, 300px) + (100vw - var(--log-panel-width, 300px)) / 2) !important;
+                bottom: max(12px, env(safe-area-inset-bottom)) !important;
+                transform: translateX(-50%) !important;
+                width: min(760px, calc(100vw - var(--log-panel-width, 300px) - 28px)) !important;
+                max-width: 760px !important;
+                z-index: 30000 !important;
+            }
+        }
+
+        @media (min-width: 901px) and (max-width: 1180px) {
+            :root { --log-panel-width: clamp(240px, 27vw, 300px); }
+            .board .card { width: clamp(31px, 4vw, 52px) !important; }
+            .player-cards .card { width: clamp(29px, 3.7vw, 48px) !important; }
+            .card-front,
+            .card-back { font-size: clamp(7px, 0.78vw, 11px) !important; }
+            .table {
+                width: clamp(400px, 52vw, 620px) !important;
+                height: clamp(230px, 34vh, 320px) !important;
+            }
+        }
+
+        @media (min-width: 901px) and (max-height: 720px) {
+            #main-container:not(.game-hidden) {
+                min-height: 620px !important;
+            }
+            #game-area {
+                min-height: 620px !important;
+                padding-top: 80px !important;
+                padding-bottom: 128px !important;
+            }
+            .controls {
+                bottom: 10px !important;
+            }
+            .board .card { width: clamp(30px, 3.8vw, 50px) !important; }
+            .player-cards .card { width: clamp(28px, 3.5vw, 46px) !important; }
+        }
+
+        @media (max-width: 900px) {
+            .controls {
+                position: sticky !important;
+                left: auto !important;
+                right: auto !important;
+                bottom: 0 !important;
+                transform: none !important;
+                width: calc(100% - 12px) !important;
+                max-width: 720px !important;
+                margin: 0 auto 8px !important;
+                z-index: 30000 !important;
+            }
+            #game-area {
+                overflow: visible !important;
+                padding-bottom: 28px !important;
+            }
+        }
+
+        @media (max-width: 600px) and (orientation: portrait) {
+            .board .card {
+                width: clamp(29px, 8.5vw, 39px) !important;
+                min-width: 27px !important;
+            }
+            .player-cards .card {
+                width: clamp(27px, 8vw, 36px) !important;
+                min-width: 25px !important;
+            }
+            .card-front,
+            .card-back {
+                font-size: clamp(7px, 2.25vw, 9px) !important;
+                padding: 2px !important;
+            }
+            .controls {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 6px !important;
+                align-items: stretch !important;
+            }
+            .controls > button {
+                width: 100% !important;
+                min-width: 0 !important;
+            }
+            .controls > div {
+                grid-column: 1 / -1 !important;
+                width: 100% !important;
+                display: grid !important;
+                grid-template-columns: minmax(0, 1fr) auto !important;
+                align-items: center !important;
+            }
+            .controls > div > div {
+                min-width: 0 !important;
+            }
+            #raise-slider {
+                width: 100% !important;
+            }
+        }
+
+        @media (max-height: 520px) and (orientation: landscape) {
+            .controls {
+                position: fixed !important;
+                left: calc(220px + (100vw - 220px) / 2) !important;
+                bottom: 6px !important;
+                transform: translateX(-50%) !important;
+                width: min(620px, calc(100vw - 236px)) !important;
+                margin: 0 !important;
+            }
+            .board .card { width: clamp(26px, 3.6vw, 38px) !important; }
+            .player-cards .card { width: clamp(24px, 3.3vw, 36px) !important; }
+        }
+
+</style>
 </head>
-<body>
+<body class="intro-lock">
     <h1 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">텍사스 홀덤 2D - 무료 온라인 포커 게임</h1>
 
     <div id="intro-screen">
@@ -914,7 +2367,15 @@
             </div>
             <div class="intro-actions">
                 <button id="btn-start-game" class="intro-btn">게임 시작</button>
-                <button id="btn-intro-rules" class="intro-btn">게임 설명 보기</button>
+                <button id="btn-intro-rules" class="intro-btn" type="button">게임 설명 보기</button>
+            </div>
+            <div id="intro-rules-panel" class="intro-rules-panel" aria-live="polite">
+                <strong>간단 규칙</strong>
+                <ul>
+                    <li>내 카드 2장과 바닥의 커뮤니티 카드 5장을 조합해 가장 높은 5장 족보를 만듭니다.</li>
+                    <li>체크, 콜, 레이즈, 폴드 중 하나를 선택하며 라운드는 프리플랍 → 플랍 → 턴 → 리버 순서로 진행됩니다.</li>
+                    <li>모든 칩은 게임용이며 실제 현금 베팅이나 환전 기능은 없습니다.</li>
+                </ul>
             </div>
             <p class="intro-notice">
                 ⚠️ 본 게임은 재미와 연습을 위한 무료 웹게임입니다. 게임 내 칩은 실제 현금 가치가 없으며, 베팅이나 환전 기능을 제공하지 않습니다.
@@ -923,12 +2384,8 @@
     </div>
 
     <div id="main-container" class="game-hidden">
-        <div id="log-container" class="collapsed">
+        <div id="log-container">
             <div id="log-header">게임 기록</div>
-            <div id="volume-container">
-                <button id="bgm-toggle-btn" title="배경음악 켜기/끄기">🔊</button>
-                <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.5">
-            </div>
             <div id="log"></div>
             
             <div class="mobile-hide-ad" style="padding: 10px; background: #111; text-align: center;">
@@ -943,7 +2400,6 @@
         </div>
 
         <div id="game-area">
-            <button id="log-toggle" title="로그 창 열기/닫기">☰</button>
             <button id="rank-guide-toggle">족보 보기</button>
 
             <div class="game-hud" aria-label="게임 상태">
@@ -987,33 +2443,34 @@
                 <div class="board" id="board"></div>
 
                 <div class="seat" id="seat-2">
-                    <div class="folded-label">포기</div><div class="winner-badge">승리</div><div class="dealer-btn">D</div><div class="action-bubble"></div>
+                    <div class="folded-label">폴드</div><div class="winner-badge">승리</div><div class="dealer-btn">D</div><div class="action-bubble"></div>
                     <div class="name">AI 플레이어 2</div><div class="chips">₩ <span class="chip-count">10000</span></div>
                     <div class="player-cards" id="cards-2"></div><div class="last-action"></div><div class="bet"></div>
                 </div>
                 <div class="seat" id="seat-1">
-                    <div class="folded-label">포기</div><div class="winner-badge">승리</div><div class="dealer-btn">D</div><div class="action-bubble"></div>
+                    <div class="folded-label">폴드</div><div class="winner-badge">승리</div><div class="dealer-btn">D</div><div class="action-bubble"></div>
                     <div class="name">AI 플레이어 1</div><div class="chips">₩ <span class="chip-count">10000</span></div>
                     <div class="player-cards" id="cards-1"></div><div class="last-action"></div><div class="bet"></div>
                 </div>
                 <div class="seat" id="seat-3">
-                    <div class="folded-label">포기</div><div class="winner-badge">승리</div><div class="dealer-btn">D</div><div class="action-bubble"></div>
+                    <div class="folded-label">폴드</div><div class="winner-badge">승리</div><div class="dealer-btn">D</div><div class="action-bubble"></div>
                     <div class="name">AI 플레이어 3</div><div class="chips">₩ <span class="chip-count">10000</span></div>
                     <div class="player-cards" id="cards-3"></div><div class="last-action"></div><div class="bet"></div>
                 </div>
                 <div class="seat" id="seat-0">
-                    <div class="folded-label">포기</div><div class="winner-badge">승리</div><div class="dealer-btn">D</div><div class="action-bubble"></div>
+                    <div class="folded-label">폴드</div><div class="winner-badge">승리</div><div class="dealer-btn">D</div><div class="action-bubble"></div>
                     <div class="name">나</div><div class="chips">₩ <span class="chip-count">10000</span></div>
                     <div class="player-cards" id="cards-0"></div><div class="last-action"></div><div class="bet"></div>
                 </div>
             </div>
 
             <div class="controls" id="controls">
-                <button id="btn-fold">포기</button>
+                <button id="btn-fold">폴드</button>
                 <button id="btn-check">체크</button>
                 <button id="btn-call">콜 (<span id="call-amount">0</span>)</button>
                 <div style="display: flex; align-items: center; gap: 10px; padding-left: 10px; border-left: 1px solid #444;">
                     <div style="display: flex; flex-direction: column; gap: 2px;">
+                        <div id="raise-status"></div>
                         <input type="range" id="raise-slider" style="width: 100px;">
                         <input type="number" id="raise-input" style="width: 80px; background: #333; color: white; border: 1px solid #555; padding: 2px 5px; border-radius: 3px; font-size: 0.8em;">
                     </div>
@@ -1088,34 +2545,80 @@
         class SoundManager {
             constructor() {
                 this.enabled = false;
-                this.masterVolume = 0.5;
-                this.bgm = new Audio('bgm.mp3'); // 같은 폴더에 bgm.mp3를 넣으면 배경음악이 재생됩니다. 
-                this.bgm.loop = true;
-                this.bgm.volume = this.masterVolume;
+                this.ctx = null;
+                this.masterVolume = 0.22;
             }
-            enable() { 
-                if (this.enabled) return;
-                this.enabled = true; 
-                this.bgm.play().then(() => {
-                    console.log("Audio Enabled");
-                }).catch(e => console.log("Audio play blocked", e));
-            }
-            setVolume(val) {
-                this.masterVolume = parseFloat(val);
-                this.bgm.volume = this.masterVolume;
-            }
-            toggleBGM() {
-                if (!this.enabled) return false;
-                if (this.bgm.paused) {
-                    this.bgm.play();
-                    return true;
-                } else {
-                    this.bgm.pause();
-                    return false;
+            enable() {
+                this.enabled = true;
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContext) this.ctx = new AudioContext();
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume().catch(() => {});
                 }
             }
+            setVolume(val) {
+                const parsed = parseFloat(val);
+                this.masterVolume = Number.isFinite(parsed) ? parsed : this.masterVolume;
+            }
+            toggleBGM() {
+                return false;
+            }
+            beep(freq = 440, duration = 0.08, type = 'sine', volume = 0.2, delay = 0) {
+                if (!this.enabled || !this.ctx) return;
+                const now = this.ctx.currentTime + delay;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, now);
+                gain.gain.setValueAtTime(0.0001, now);
+                gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, volume * this.masterVolume), now + 0.01);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + duration + 0.02);
+            }
+            noise(duration = 0.08, volume = 0.14) {
+                if (!this.enabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const bufferSize = Math.max(1, Math.floor(this.ctx.sampleRate * duration));
+                const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+                const source = this.ctx.createBufferSource();
+                const gain = this.ctx.createGain();
+                gain.gain.setValueAtTime(volume * this.masterVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+                source.buffer = buffer;
+                source.connect(gain);
+                gain.connect(this.ctx.destination);
+                source.start(now);
+                source.stop(now + duration);
+            }
             play(name) {
-                // 효과음 로직 생략
+                if (!this.enabled) return;
+                if (name === 'card') {
+                    this.beep(820, 0.035, 'triangle', 0.18);
+                    this.beep(520, 0.035, 'triangle', 0.12, 0.035);
+                } else if (name === 'chip') {
+                    this.beep(360, 0.05, 'square', 0.12);
+                    this.beep(520, 0.05, 'square', 0.10, 0.045);
+                } else if (name === 'check') {
+                    this.beep(420, 0.045, 'sine', 0.12);
+                } else if (name === 'fold') {
+                    this.noise(0.07, 0.10);
+                    this.beep(180, 0.08, 'sawtooth', 0.08);
+                } else if (name === 'shuffle') {
+                    this.noise(0.16, 0.12);
+                } else if (name === 'win') {
+                    this.beep(523, 0.09, 'triangle', 0.16);
+                    this.beep(659, 0.09, 'triangle', 0.16, 0.09);
+                    this.beep(784, 0.13, 'triangle', 0.18, 0.18);
+                } else {
+                    this.beep(440, 0.05, 'sine', 0.10);
+                }
             }
         }
 
@@ -1130,17 +2633,103 @@
             }
             getColorClass() { return (this.suit === '♥' || this.suit === '♦') ? 'red' : 'black'; }
             getDisplayRank() { return this.rank === 'T' ? '10' : this.rank; }
-            getHTML(hidden = false) {
+            getKey() { return `${this.rank}${this.suit}`; }
+            getSuitName() {
+                return ({'♠':'spade','♥':'heart','♦':'diamond','♣':'club'})[this.suit] || 'spade';
+            }
+            renderCorner(position) {
                 const r = this.getDisplayRank();
+                return `<div class="${position}"><span class="corner-rank">${r}</span><span class="corner-suit">${this.suit}</span></div>`;
+            }
+            getCenterHTML() {
+                const r = this.getDisplayRank();
+                if (this.rank === 'A') {
+                    return `<div class="center ace"><span class="ace-letter">A</span><span class="ace-suit">${this.suit}</span></div>`;
+                }
+                if (['K','Q','J'].includes(this.rank)) {
+                    return `<div class="center face">${this.getFaceSVG()}<div class="face-rank-badge">${this.rank}</div></div>`;
+                }
+                return `<div class="center numeric"><span class="center-rank">${r}</span><span class="center-suit">${this.suit}</span></div>`;
+            }
+            getFaceSVG() {
+                const emblem = this.suit;
+                const accent = this.getColorClass() === 'red' ? '#c4162a' : '#111827';
+                if (this.rank === 'K') {
+                    return `
+                    <div class="face-card-art king">
+                        <svg viewBox="0 0 100 140" aria-hidden="true">
+                            <text x="50" y="24" text-anchor="middle" font-size="44" class="suit-emblem" fill="currentColor">${emblem}</text>
+                            <path d="M28 28 L36 18 L45 28 L50 15 L55 28 L64 18 L72 28 L67 38 L33 38 Z" fill="#f1c40f" stroke="#a56b00" stroke-width="2"/>
+                            <rect x="25" y="34" width="50" height="8" rx="4" fill="#d8a80d" stroke="#a56b00" stroke-width="1.5"/>
+                            <rect x="20" y="43" width="60" height="78" rx="18" class="portrait-frame"/>
+                            <path d="M24 118 Q50 92 76 118 L76 126 L24 126 Z" fill="${accent}" opacity="0.85"/>
+                            <path d="M33 112 Q50 86 67 112 Q61 124 50 126 Q39 124 33 112 Z" fill="#f5d0a9" stroke="#d6a87b" stroke-width="1.5"/>
+                            <circle cx="50" cy="70" r="21" fill="#f5d0a9" stroke="#d6a87b" stroke-width="1.5"/>
+                            <path d="M30 66 Q50 42 70 66 L69 58 Q64 44 50 42 Q36 44 31 58 Z" fill="${accent}"/>
+                            <path d="M40 87 Q50 95 60 87" stroke="#7a4d23" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+                            <circle cx="43" cy="73" r="2" fill="#222"/>
+                            <circle cx="57" cy="73" r="2" fill="#222"/>
+                            <path d="M41 80 Q43 78 46 80" stroke="#7a4d23" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+                            <path d="M54 80 Q57 78 59 80" stroke="#7a4d23" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+                            <path d="M44 95 Q50 99 56 95" stroke="#7a4d23" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                            <path d="M40 84 Q50 92 60 84" stroke="#7a4d23" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+                            <path d="M38 90 Q36 104 27 111" stroke="${accent}" stroke-width="4" stroke-linecap="round" fill="none"/>
+                            <path d="M62 90 Q64 104 73 111" stroke="${accent}" stroke-width="4" stroke-linecap="round" fill="none"/>
+                            <rect x="47" y="104" width="6" height="18" rx="2" fill="#f1c40f" stroke="#a56b00" stroke-width="1.3"/>
+                        </svg>
+                    </div>`;
+                }
+                if (this.rank === 'Q') {
+                    return `
+                    <div class="face-card-art queen">
+                        <svg viewBox="0 0 100 140" aria-hidden="true">
+                            <text x="50" y="24" text-anchor="middle" font-size="44" class="suit-emblem" fill="currentColor">${emblem}</text>
+                            <path d="M26 29 L36 20 L44 30 L50 18 L56 30 L64 20 L74 29 L69 38 L31 38 Z" fill="#f1c40f" stroke="#a56b00" stroke-width="2"/>
+                            <rect x="22" y="42" width="56" height="78" rx="18" class="portrait-frame"/>
+                            <path d="M24 118 Q50 95 76 118 L76 126 L24 126 Z" fill="${accent}" opacity="0.70"/>
+                            <circle cx="50" cy="69" r="20" fill="#f5d0a9" stroke="#d6a87b" stroke-width="1.5"/>
+                            <path d="M33 67 Q37 46 50 46 Q63 46 67 67" fill="${accent}"/>
+                            <path d="M31 72 Q34 94 46 103 L39 111 Q28 101 26 84 Q25 76 31 72 Z" fill="${accent}"/>
+                            <path d="M69 72 Q66 94 54 103 L61 111 Q72 101 74 84 Q75 76 69 72 Z" fill="${accent}"/>
+                            <circle cx="43" cy="73" r="2" fill="#222"/>
+                            <circle cx="57" cy="73" r="2" fill="#222"/>
+                            <path d="M44 80 Q50 83 56 80" stroke="#7a4d23" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+                            <path d="M45 87 Q50 91 55 87" stroke="#7a4d23" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                            <path d="M37 104 Q50 96 63 104 L58 120 Q50 125 42 120 Z" fill="#7a4dd8" opacity="0.9"/>
+                            <path d="M70 101 L79 92 L82 96 L73 105 Z" fill="#f1c40f" stroke="#a56b00" stroke-width="1.3"/>
+                            <circle cx="80" cy="92" r="4" fill="${accent}"/>
+                        </svg>
+                    </div>`;
+                }
+                return `
+                <div class="face-card-art jack">
+                    <svg viewBox="0 0 100 140" aria-hidden="true">
+                        <text x="50" y="24" text-anchor="middle" font-size="44" class="suit-emblem" fill="currentColor">${emblem}</text>
+                        <path d="M30 28 L50 18 L70 28 L64 40 L36 40 Z" fill="#f1c40f" stroke="#a56b00" stroke-width="2"/>
+                        <rect x="22" y="42" width="56" height="78" rx="18" class="portrait-frame"/>
+                        <path d="M25 118 Q50 96 75 118 L75 126 L25 126 Z" fill="${accent}" opacity="0.8"/>
+                        <circle cx="50" cy="69" r="19" fill="#f5d0a9" stroke="#d6a87b" stroke-width="1.5"/>
+                        <path d="M33 63 Q41 49 50 49 Q59 49 67 63 L62 67 Q56 58 50 58 Q44 58 38 67 Z" fill="${accent}"/>
+                        <path d="M40 79 Q50 84 60 79" stroke="#7a4d23" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+                        <circle cx="43" cy="72" r="2" fill="#222"/>
+                        <circle cx="57" cy="72" r="2" fill="#222"/>
+                        <path d="M46 87 Q50 90 54 87" stroke="#7a4d23" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+                        <path d="M37 102 Q50 94 63 102 L58 119 Q50 123 42 119 Z" fill="#3b82f6" opacity="0.95"/>
+                        <path d="M50 96 L54 102 L50 108 L46 102 Z" fill="#ffffff" opacity="0.92"/>
+                        <path d="M30 53 L24 83 L31 80 L33 90" fill="none" stroke="#a56b00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>`;
+            }
+            getHTML(hidden = false) {
                 const colorClass = this.getColorClass();
                 return `
-                    <div class="card ${hidden ? '' : 'revealed'}">
+                    <div class="card ${hidden ? '' : 'revealed'}" data-card="${this.getKey()}">
                         <div class="card-inner">
                             <div class="card-back"></div>
                             <div class="card-front ${colorClass}">
-                                <div class="top">${r}${this.suit}</div>
-                                <div class="center">${this.suit}</div>
-                                <div class="bottom">${r}${this.suit}</div>
+                                ${this.renderCorner('top')}
+                                ${this.getCenterHTML()}
+                                ${this.renderCorner('bottom')}
                             </div>
                         </div>
                     </div>`;
@@ -1234,17 +2823,23 @@
             }
 
             static getBestHand(holeCards, communityCards) {
+                return this.getBestHandDetails(holeCards, communityCards).score;
+            }
+
+            static getBestHandDetails(holeCards, communityCards) {
                 let allCards = [...holeCards, ...communityCards];
                 let combos = this.getCombinations(allCards, 5);
                 let bestScore = [-1];
+                let bestCards = [];
                 
                 combos.forEach(combo => {
                     let score = this.evaluate5(combo);
                     if (this.compareScores(score, bestScore) > 0) {
                         bestScore = score;
+                        bestCards = combo;
                     }
                 });
-                return bestScore;
+                return { score: bestScore, cards: bestCards };
             }
 
             static getRankName(rankLevel) {
@@ -1316,9 +2911,6 @@
                     this.restartGame(); 
                 };
 
-                document.getElementById('log-toggle').onclick = () => {
-                    document.getElementById('log-container').classList.toggle('collapsed');
-                };
                 
                 document.getElementById('rank-guide-toggle').onclick = () => {
                     document.getElementById('rank-guide').classList.toggle('show');
@@ -1326,24 +2918,20 @@
 
                 const raiseInput = document.getElementById('raise-input');
                 const raiseSlider = document.getElementById('raise-slider');
-                raiseSlider.oninput = () => raiseInput.value = raiseSlider.value;
-                raiseInput.oninput = () => raiseSlider.value = raiseInput.value;
-
-                const volSlider = document.getElementById('volume-slider');
-                volSlider.oninput = () => this.sounds.setVolume(volSlider.value);
-
-                const bgmBtn = document.getElementById('bgm-toggle-btn');
-                bgmBtn.onclick = () => {
-                    if (!this.sounds.enabled) return;
-                    const isPlaying = this.sounds.toggleBGM();
-                    bgmBtn.innerText = isPlaying ? '🔊' : '🔇';
-                    this.log(isPlaying ? "배경음악이 다시 재생됩니다." : "배경음악이 일시정지되었습니다.");
+                raiseSlider.oninput = () => {
+                    raiseInput.value = raiseSlider.value;
+                    this.updateRaiseAllInState();
                 };
+                raiseInput.oninput = () => {
+                    raiseSlider.value = raiseInput.value;
+                    this.updateRaiseAllInState();
+                };
+
             }
 
             getActionLabel(action) {
                 const labels = {
-                    fold: '포기',
+                    fold: '폴드',
                     check: '체크',
                     call: '콜',
                     raise: '레이즈'
@@ -1425,6 +3013,7 @@
                 this.roundNo = 0;
                 document.getElementById('game-over-overlay').style.display = 'none';
                 document.getElementById('log').innerHTML = '';
+                this.clearWinningAnimations();
                 this.log("게임을 재시작합니다. 행운을 빕니다!");
                 this.startRound();
             }
@@ -1511,6 +3100,8 @@
                 this.roundNo++;
                 clearTimeout(this.nextRoundTimeout);
                 clearTimeout(this.dealTimeout);
+                clearTimeout(this._winningEffectTimer);
+                this.clearWinningAnimations();
 
                 this.deck.reset();
                 this.board = [];
@@ -1743,6 +3334,35 @@
                 this.handleAction(action, player);
             }
 
+            updateRaiseAllInState() {
+                const raiseInput = document.getElementById('raise-input');
+                const raiseSlider = document.getElementById('raise-slider');
+                const raiseStatus = document.getElementById('raise-status');
+                const raiseBtn = document.getElementById('btn-raise');
+                if (!raiseInput || !raiseSlider || !raiseStatus || !raiseBtn) return;
+
+                if (raiseInput.disabled || raiseSlider.disabled) {
+                    raiseStatus.textContent = '';
+                    raiseBtn.textContent = '레이즈';
+                    raiseBtn.classList.remove('all-in-ready');
+                    return;
+                }
+
+                const current = Number(raiseInput.value);
+                const max = Number(raiseInput.max);
+                const isAllIn = Number.isFinite(current) && Number.isFinite(max) && current >= max;
+
+                if (isAllIn) {
+                    raiseStatus.textContent = 'ALL-IN';
+                    raiseBtn.textContent = '올인';
+                    raiseBtn.classList.add('all-in-ready');
+                } else {
+                    raiseStatus.textContent = '';
+                    raiseBtn.textContent = '레이즈';
+                    raiseBtn.classList.remove('all-in-ready');
+                }
+            }
+
             showUserControls() {
                 const controls = document.getElementById('controls');
                 const cp = this.players[0]; 
@@ -1777,11 +3397,13 @@
                     raiseSlider.min = minRaiseTotal;
                     raiseSlider.max = maxRaiseTotal;
                     raiseSlider.value = minRaiseTotal;
-                    raiseSlider.step = this.sbAmount; 
+                    raiseSlider.step = this.sbAmount;
+                    this.updateRaiseAllInState();
                 } else {
                     document.getElementById('btn-raise').disabled = true;
                     raiseInput.disabled = true;
                     raiseSlider.disabled = true;
+                    this.updateRaiseAllInState();
                 }
 
                 controls.classList.add('active');
@@ -1799,7 +3421,7 @@
 
                 if (action === 'fold') {
                     player.folded = true;
-                    this.log(`${player.name} <span class="log-alert">포기</span>`);
+                    this.log(`${player.name} <span class="log-alert">폴드</span>`);
                     this.sounds.play('fold');
                     this.actionsNeeded--;
                 } 
@@ -1824,7 +3446,9 @@
                     
                     let amountToPutIn = raiseTo - player.betAmount;
                     this.processBet(player, amountToPutIn);
-                    this.log(`${player.name} <span class="log-action">레이즈</span> ${player.betAmount}까지`);
+                    const allInText = player.chips === 0 ? ' <b style="color:var(--gold)">ALL-IN</b>' : '';
+                    this.log(`${player.name} <span class="log-action">레이즈</span> ${player.betAmount}까지${allInText}`);
+                    if (player.chips === 0) player.lastAction = '올인';
                     this.actionsNeeded = this.players.filter(p => !p.folded && p.chips > 0).length - 1; 
                 }
 
@@ -1878,36 +3502,118 @@
                 }
             }
 
+
+            clearWinningAnimations() {
+                document.querySelectorAll('.winning-card, .force-face-up').forEach(el => el.classList.remove('winning-card', 'force-face-up'));
+                document.querySelectorAll('.card-inner').forEach(el => {
+                    if (el.style) el.style.transform = '';
+                });
+                document.querySelectorAll('.card-back').forEach(el => {
+                    if (!el.style) return;
+                    el.style.display = '';
+                    el.style.visibility = '';
+                    el.style.opacity = '';
+                });
+                document.querySelectorAll('.card-front').forEach(el => {
+                    if (!el.style) return;
+                    el.style.transform = '';
+                    el.style.backfaceVisibility = '';
+                    el.style.webkitBackfaceVisibility = '';
+                    el.style.zIndex = '';
+                });
+                document.querySelectorAll('.winning-hand-float').forEach(el => el.remove());
+                document.querySelectorAll('.showdown-highlight').forEach(el => el.classList.remove('showdown-highlight'));
+            }
+
+            highlightWinningHands(winners) {
+                this.clearWinningAnimations();
+                this.sounds.play('win');
+
+                winners.forEach(winner => {
+                    const winningCards = winner.winningCards || [];
+                    winningCards.forEach(card => {
+                        const selector = `.card[data-card="${card.getKey()}"]`;
+                        document.querySelectorAll(selector).forEach(cardEl => {
+                            // 쇼다운 승리 조합은 반드시 앞면으로 보이게 강제합니다.
+                            // 기존 카드 뒤집기 구조는 revealed + rotateY(180deg)이지만,
+                            // 일부 미리보기/모바일 브라우저에서 애니메이션과 겹치면 뒷면이 다시 보일 수 있어
+                            // 승리 카드만 앞면 단일 카드처럼 고정합니다.
+                            cardEl.classList.add('revealed', 'force-face-up', 'winning-card');
+                            const inner = cardEl.querySelector('.card-inner');
+                            const back = cardEl.querySelector('.card-back');
+                            const front = cardEl.querySelector('.card-front');
+                            if (inner) inner.style.transform = 'none';
+                            if (back) {
+                                back.style.display = 'none';
+                                back.style.visibility = 'hidden';
+                                back.style.opacity = '0';
+                            }
+                            if (front) {
+                                front.style.transform = 'none';
+                                front.style.backfaceVisibility = 'visible';
+                                front.style.webkitBackfaceVisibility = 'visible';
+                                front.style.zIndex = '5';
+                            }
+                        });
+                    });
+
+                    const seatEl = document.getElementById(`seat-${winner.id}`);
+                    if (seatEl) {
+                        seatEl.classList.add('showdown-highlight');
+
+                        // 족보 이름은 body에 absolute로 띄웁니다.
+                        // fixed가 아니기 때문에 페이지를 스크롤해도 화면을 따라오지 않고,
+                        // 처음 표시된 자리 근처에 그대로 남습니다.
+                        const label = document.createElement('div');
+                        label.className = 'winning-hand-float';
+                        label.dataset.winnerId = winner.id;
+                        label.textContent = winner.winMessage || HandEvaluator.getRankName(winner.bestHandScore?.[0]);
+
+                        const rect = seatEl.getBoundingClientRect();
+                        const scrollX = window.scrollX || window.pageXOffset || 0;
+                        const scrollY = window.scrollY || window.pageYOffset || 0;
+                        const labelTop = Math.max(scrollY + 12, rect.top + scrollY - 46);
+                        const labelLeft = Math.min(scrollX + window.innerWidth - 20, Math.max(scrollX + 20, rect.left + scrollX + rect.width / 2));
+                        label.style.top = `${labelTop}px`;
+                        label.style.left = `${labelLeft}px`;
+
+                        document.body.appendChild(label);
+                    }
+                });
+
+                clearTimeout(this._winningEffectTimer);
+                this._winningEffectTimer = setTimeout(() => this.clearWinningAnimations(), 5600);
+            }
+
             calculatePots() {
-                // 팟을 만든 플레이어와 팟을 받을 수 있는 플레이어를 분리합니다.
-                // 폴드한 플레이어가 이미 넣은 칩도 팟 금액에는 포함되어야 하지만,
-                // 승리 후보에서는 제외되어야 실제 홀덤 규칙에 더 가깝습니다.
+                // 팟 계산 수정:
+                // - 폴드한 플레이어가 이미 넣은 칩도 팟 금액에는 포함합니다.
+                // - 하지만 폴드한 플레이어는 절대 승리 후보가 아닙니다.
+                // - 올인 금액이 다른 경우에는 레벨별 메인/사이드 팟으로 나눕니다.
                 const contributors = this.players.filter(p => p.totalBetInHand > 0);
-                const eligiblePlayers = this.players.filter(p => !p.folded && p.totalBetInHand > 0);
+                const contenders = this.players.filter(p => !p.folded && p.totalBetInHand > 0);
 
-                if (eligiblePlayers.length <= 1) {
-                    return [{
-                        amount: this.pot,
-                        eligiblePlayerIds: eligiblePlayers.map(p => p.id)
-                    }];
-                }
+                if (contributors.length === 0) return [];
 
-                const contributionLevels = [...new Set(contributors.map(p => p.totalBetInHand))].sort((a, b) => a - b);
+                const levels = [...new Set(contributors.map(p => p.totalBetInHand))]
+                    .filter(v => v > 0)
+                    .sort((a, b) => a - b);
+
                 const pots = [];
                 let previousLevel = 0;
 
-                for (const level of contributionLevels) {
-                    const amountPerContributor = level - previousLevel;
-                    if (amountPerContributor <= 0) continue;
+                for (const level of levels) {
+                    const sliceAmount = level - previousLevel;
+                    if (sliceAmount <= 0) continue;
 
-                    const contributorsAtThisLevel = contributors.filter(p => p.totalBetInHand >= level);
-                    const eligibleForThisPot = eligiblePlayers.filter(p => p.totalBetInHand >= level);
-                    const potAmount = amountPerContributor * contributorsAtThisLevel.length;
+                    const contributorsAtLevel = contributors.filter(p => p.totalBetInHand >= level);
+                    const eligibleAtLevel = contenders.filter(p => p.totalBetInHand >= level);
+                    const amount = sliceAmount * contributorsAtLevel.length;
 
-                    if (potAmount > 0 && eligibleForThisPot.length > 0) {
+                    if (amount > 0 && eligibleAtLevel.length > 0) {
                         pots.push({
-                            amount: potAmount,
-                            eligiblePlayerIds: eligibleForThisPot.map(p => p.id),
+                            amount,
+                            eligiblePlayerIds: eligibleAtLevel.map(p => p.id),
                             level
                         });
                     }
@@ -1915,9 +3621,10 @@
                     previousLevel = level;
                 }
 
-                const totalCalculatedPot = pots.reduce((sum, pot) => sum + pot.amount, 0);
-                if (totalCalculatedPot !== this.pot && pots.length > 0) {
-                    pots[pots.length - 1].amount += (this.pot - totalCalculatedPot);
+                const calculated = pots.reduce((sum, pot) => sum + pot.amount, 0);
+                if (calculated !== this.pot && pots.length > 0) {
+                    // 폴드/블라인드 등으로 생긴 잔여 칩은 받을 수 있는 가장 마지막 팟에 붙입니다.
+                    pots[pots.length - 1].amount += (this.pot - calculated);
                 }
 
                 return pots;
@@ -1956,7 +3663,9 @@
                 
                 const activePlayers = this.players.filter(p => !p.folded);
                 activePlayers.forEach(p => {
-                    p.bestHandScore = HandEvaluator.getBestHand(p.cards, this.board);
+                    const handDetails = HandEvaluator.getBestHandDetails(p.cards, this.board);
+                    p.bestHandScore = handDetails.score;
+                    p.winningCards = handDetails.cards;
                     const rankName = HandEvaluator.getRankName(p.bestHandScore[0]);
                     this.log(`${p.name} 패 공개: ${rankName}`);
                 });
@@ -1997,12 +3706,15 @@
 
                 this.pot = 0;
                 this.updateUI();
-                this.nextRoundTimeout = setTimeout(() => this.startRound(), 5000); 
+                const showdownWinners = activePlayers.filter(p => p.isWinner);
+                setTimeout(() => this.highlightWinningHands(showdownWinners), 120);
+                this.nextRoundTimeout = setTimeout(() => this.startRound(), 6500); 
                 this.checkGameOver();
             }
         }
 
-        window.onload = () => {
+        document.addEventListener('DOMContentLoaded', () => {
+            // 미리보기/로컬 환경에서 외부 광고 스크립트 로딩이 늦어져도 시작 버튼이 바로 눌리도록 DOMContentLoaded에서 연결합니다.
             let gameInstance = null;
 
             const introScreen = document.getElementById('intro-screen');
@@ -2011,22 +3723,143 @@
             const rulesButton = document.getElementById('btn-intro-rules');
             const difficultySelect = document.getElementById('difficulty-select');
 
-            startButton.addEventListener('click', () => {
-                introScreen.style.display = 'none';
-                mainContainer.classList.remove('game-hidden');
+            const startGameFromIntro = () => {
+                if (!introScreen || !mainContainer) return;
+                introScreen.classList.add('intro-closing');
+                setTimeout(() => {
+                    introScreen.style.display = 'none';
+                    document.body.classList.remove('intro-lock');
+                    mainContainer.classList.remove('game-hidden');
 
-                if (!gameInstance) {
-                    const selectedDifficulty = difficultySelect ? difficultySelect.value : 'normal';
-                    gameInstance = new TexasHoldem(selectedDifficulty);
-                    gameInstance.sounds.enable();
-                    gameInstance.log(`시작 버튼을 눌러 사운드가 활성화되었습니다. AI 난이도: ${gameInstance.difficultyNames[selectedDifficulty] || '보통'}`);
-                }
-            });
+                    if (!gameInstance) {
+                        const selectedDifficulty = difficultySelect ? difficultySelect.value : 'normal';
+                        gameInstance = new TexasHoldem(selectedDifficulty);
+                        gameInstance.log(`AI 난이도: ${gameInstance.difficultyNames[selectedDifficulty] || '보통'}`);
+                    }
+                }, 180);
+            };
 
-            rulesButton.addEventListener('click', () => {
-                document.getElementById('info-section').scrollIntoView({ behavior: 'smooth' });
-            });
-        };
+            if (startButton) {
+                startButton.onclick = startGameFromIntro;
+                startButton.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    startGameFromIntro();
+                }, { passive: false });
+            }
+
+            if (rulesButton) {
+                rulesButton.onclick = () => {
+                    const panel = document.getElementById('intro-rules-panel');
+                    if (!panel) return;
+                    const isOpen = panel.classList.toggle('show');
+                    rulesButton.textContent = isOpen ? '게임 설명 닫기' : '게임 설명 보기';
+                };
+            }
+        });
     </script>
+
+<script>
+    // Mobile browser address bars change viewport height; this keeps CSS stable.
+    (function () {
+        function setAppVh() {
+            document.documentElement.style.setProperty('--app-vh', (window.innerHeight * 0.01) + 'px');
+        }
+        setAppVh();
+        window.addEventListener('resize', setAppVh, { passive: true });
+        window.addEventListener('orientationchange', function () { setTimeout(setAppVh, 250); }, { passive: true });
+    })();
+</script>
+
+
+<script>
+(function () {
+    function safeStartGame() {
+        try {
+            var overlay = document.getElementById('intro-overlay') ||
+                          document.getElementById('start-overlay') ||
+                          document.getElementById('intro-screen') ||
+                          document.querySelector('.intro-overlay') ||
+                          document.querySelector('.start-overlay');
+
+            if (overlay) {
+                overlay.style.display = 'none';
+                overlay.classList.add('hidden');
+                overlay.setAttribute('aria-hidden', 'true');
+            }
+
+            document.documentElement.classList.remove('intro-lock', 'modal-open');
+            document.body.classList.remove('intro-lock', 'modal-open', 'no-scroll');
+            document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.height = '';
+
+            var main = document.getElementById('main-container');
+            var gameArea = document.getElementById('game-area');
+            if (main) {
+                main.style.display = '';
+                main.style.visibility = 'visible';
+                main.style.opacity = '1';
+            }
+            if (gameArea) {
+                gameArea.style.display = '';
+                gameArea.style.visibility = 'visible';
+                gameArea.style.opacity = '1';
+            }
+
+            if (!window.__freeplayHoldemStarted) {
+                window.__freeplayHoldemStarted = true;
+
+                if (!window.game || !(window.game instanceof TexasHoldem)) {
+                    window.game = new TexasHoldem();
+                    if (window.game && window.game.sounds) window.game.sounds.enable();
+                }
+            }
+        } catch (err) {
+            console.error('Game start failed:', err);
+        }
+    }
+
+    function wireStartButtons() {
+        var candidates = Array.from(document.querySelectorAll('button, a, [role="button"]'));
+        var startButtons = candidates.filter(function (el) {
+            var text = (el.textContent || '').replace(/\s+/g, '');
+            var id = (el.id || '').toLowerCase();
+            var cls = (el.className || '').toString().toLowerCase();
+            return id.includes('start') ||
+                   id.includes('play') ||
+                   cls.includes('start') ||
+                   cls.includes('play') ||
+                   text.includes('게임시작') ||
+                   text.includes('시작하기') ||
+                   text.includes('PLAY') ||
+                   text.includes('START');
+        });
+
+        startButtons.forEach(function (btn) {
+            btn.onclick = function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                safeStartGame();
+                return false;
+            };
+            btn.addEventListener('touchend', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                safeStartGame();
+            }, { passive: false });
+        });
+
+        window.startGame = safeStartGame;
+        window.safeStartGame = safeStartGame;
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', wireStartButtons);
+    } else {
+        wireStartButtons();
+    }
+})();
+</script>
+
 </body>
 </html>
