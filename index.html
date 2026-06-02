@@ -181,7 +181,7 @@
             width: 80vw;
             max-width: 900px;
             height: 40vh;
-            margin: 100px 0 120px 0;
+            margin: 145px 0 175px 0;
             background: radial-gradient(circle, #107a35 0%, var(--table-color) 100%);
             border-radius: 150px;
             border: 12px solid var(--rail-color);
@@ -201,7 +201,37 @@
         .card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); border-radius: 6px; }
         .card.revealed .card-inner { transform: rotateY(180deg); }
         .card-front, .card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 6px; display: flex; flex-direction: column; justify-content: space-between; padding: 3px; font-size: 0.9em; font-weight: bold; }
-        .card-back { background: repeating-linear-gradient(45deg, #003366, #003366 10px, #004080 10px, #004080 20px); z-index: 2; }
+        .card-back {
+            z-index: 2;
+            overflow: hidden;
+            border: 2px solid rgba(255, 215, 0, 0.75);
+            background:
+                radial-gradient(circle at center, rgba(241,196,15,0.22) 0 12%, transparent 13% 100%),
+                linear-gradient(135deg, rgba(255,255,255,0.08) 0 25%, transparent 25% 50%, rgba(255,255,255,0.08) 50% 75%, transparent 75%),
+                linear-gradient(145deg, #6d0615 0%, #a20d22 46%, #3b0710 100%);
+            background-size: 100% 100%, 14px 14px, 100% 100%;
+            box-shadow: inset 0 0 0 2px rgba(0,0,0,0.35), inset 0 0 12px rgba(0,0,0,0.45);
+        }
+        .card-back::before {
+            content: "♠";
+            position: absolute;
+            inset: 16% 18%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 215, 0, 0.55);
+            border-radius: 4px;
+            color: rgba(255, 215, 0, 0.85);
+            font-size: 1.35em;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+        }
+        .card-back::after {
+            content: "";
+            position: absolute;
+            inset: 5px;
+            border: 1px solid rgba(255,255,255,0.22);
+            border-radius: 4px;
+        }
         
         /* 복구된 카드 앞면 스타일 */
         .card-front { transform: rotateY(180deg); z-index: 1; background: white; }
@@ -229,10 +259,12 @@
         .seat.has-button .dealer-btn { display: block; }
         .player-cards { display: flex; gap: 5px; margin-top: 5px; }
 
-        #seat-0 { bottom: -85px; left: 50%; transform: translateX(-50%); }
-        #seat-1 { left: -85px; top: 50%; transform: translateY(-50%); }   
-        #seat-2 { top: -85px; left: 50%; transform: translateX(-50%); }
-        #seat-3 { right: -85px; top: 50%; transform: translateY(-50%); }  
+        /* 좌석이 테이블과 겹치지 않도록 테이블 바깥쪽으로 배치 */
+        .seat { min-width: 132px; }
+        #seat-0 { bottom: -225px; left: 50%; transform: translateX(-50%); }
+        #seat-1 { left: -168px; top: 50%; transform: translateY(-50%); }   
+        #seat-2 { top: -190px; left: 50%; transform: translateX(-50%); }
+        #seat-3 { right: -168px; top: 50%; transform: translateY(-50%); }  
 
         #seat-0.active { transform: translateX(-50%) scale(1.05); }
         #seat-1.active { transform: translateY(-50%) scale(1.05); }
@@ -258,7 +290,7 @@
 
         /* 애니메이션 스타일 */
         .chip-animation { position: fixed; width: 20px; height: 20px; background: radial-gradient(circle, #ffd700 0%, #b8860b 100%); border: 2px dashed rgba(255,255,255,0.5); border-radius: 50%; z-index: 1000; pointer-events: none; transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-        .card-animation-obj { position: fixed; width: 60px; height: 90px; background: repeating-linear-gradient(45deg, #003366, #003366 10px, #004080 10px, #004080 20px); border-radius: 6px; z-index: 1000; pointer-events: none; transition: all 0.5s ease-in-out; box-shadow: 2px 2px 8px rgba(0,0,0,0.6); }
+        .card-animation-obj { position: fixed; width: 60px; height: 90px; background: linear-gradient(145deg, #6d0615 0%, #a20d22 46%, #3b0710 100%); border: 2px solid rgba(255, 215, 0, 0.75); border-radius: 6px; z-index: 1000; pointer-events: none; transition: all 0.5s ease-in-out; box-shadow: 2px 2px 8px rgba(0,0,0,0.6), inset 0 0 12px rgba(0,0,0,0.45); }
 
         /* 볼륨 및 오버레이 */
         #volume-container { padding: 10px 15px; background: #1a1a1a; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 10px; font-size: 0.8em; color: #888; }
@@ -273,22 +305,583 @@
         #btn-restart, #btn-continue { background: var(--gold); color: #000; padding: 15px 40px; font-size: 1.5rem; border-radius: 50px; cursor: pointer; border: none; font-weight: bold; }
         #btn-restart:hover, #btn-continue:hover { background: #f39c12; }
 
+
+
+        /* 인게임 화면 강화 */
+        #game-area {
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 50% 35%, rgba(16,122,53,0.26) 0%, rgba(10,60,30,0.18) 24%, transparent 44%),
+                radial-gradient(circle at 18% 18%, rgba(241,196,15,0.14) 0%, transparent 30%),
+                radial-gradient(circle at 82% 78%, rgba(52,152,219,0.12) 0%, transparent 32%),
+                linear-gradient(135deg, #101010 0%, #171717 45%, #0b0b0b 100%);
+        }
+        #game-area::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+            background-size: 42px 42px;
+            opacity: 0.16;
+            pointer-events: none;
+        }
+        #game-area::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, transparent 42%, rgba(0,0,0,0.55) 100%);
+            pointer-events: none;
+        }
+        .game-hud {
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1002;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            padding: 8px 12px;
+            border: 1px solid rgba(241,196,15,0.35);
+            border-radius: 999px;
+            background: rgba(0,0,0,0.62);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+            white-space: nowrap;
+        }
+        .hud-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #ddd;
+            font-size: 0.82rem;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .hud-pill strong { color: var(--gold); font-weight: 800; }
+        .table-light {
+            position: absolute;
+            width: 340px;
+            height: 340px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(241,196,15,0.16) 0%, transparent 65%);
+            filter: blur(2px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .table-light.left { left: 6%; top: 16%; }
+        .table-light.right { right: 4%; bottom: 8%; background: radial-gradient(circle, rgba(52,152,219,0.12) 0%, transparent 68%); }
+        .decor-card, .decor-chip {
+            position: absolute;
+            z-index: 1;
+            opacity: 0.45;
+            pointer-events: none;
+            user-select: none;
+        }
+        .decor-card {
+            width: 54px;
+            height: 78px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.92);
+            color: #111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 900;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+        }
+        .decor-card.red { color: #d63031; }
+        .decor-card.c1 { left: 14%; bottom: 20%; transform: rotate(-18deg); }
+        .decor-card.c2 { right: 15%; top: 24%; transform: rotate(16deg); }
+        .decor-chip {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #f7d95f 0 34%, #9b6900 35% 50%, #f7d95f 51% 62%, #5c3a00 63% 100%);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.45);
+        }
+        .decor-chip.ch1 { left: 9%; top: 35%; }
+        .decor-chip.ch2 { right: 9%; bottom: 28%; transform: scale(0.8); }
+        .table {
+            z-index: 5;
+            background:
+                radial-gradient(ellipse at center, rgba(255,255,255,0.08) 0%, transparent 42%),
+                repeating-radial-gradient(ellipse at center, rgba(255,255,255,0.035) 0 2px, transparent 2px 12px),
+                radial-gradient(circle, #12923f 0%, var(--table-color) 68%, #06441c 100%);
+            border: 14px solid transparent;
+            background-clip: padding-box;
+            box-shadow:
+                inset 0 0 35px rgba(0,0,0,0.58),
+                inset 0 0 0 6px rgba(255,255,255,0.05),
+                0 0 0 12px var(--rail-color),
+                0 0 0 17px rgba(241,196,15,0.18),
+                0 18px 45px rgba(0,0,0,0.86);
+        }
+        .table::before {
+            content: "FREE PLAY HOLD'EM";
+            position: absolute;
+            bottom: 42px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.18);
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            pointer-events: none;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.55);
+        }
+        .table::after {
+            content: "";
+            position: absolute;
+            inset: 18px;
+            border: 1px dashed rgba(241,196,15,0.2);
+            border-radius: 130px;
+            pointer-events: none;
+        }
+        .pot-area {
+            min-width: 150px;
+            padding: 8px 16px;
+            margin-bottom: 14px;
+            background: rgba(0,0,0,0.46);
+            border: 1px solid rgba(241,196,15,0.35);
+            border-radius: 999px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+        }
+        .pot-area div::before { content: "💰 "; }
+        .board {
+            position: relative;
+            padding: 12px 14px;
+            min-width: 360px;
+            border-radius: 14px;
+            background: rgba(0,0,0,0.18);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: inset 0 0 18px rgba(0,0,0,0.22);
+        }
+        .board:empty::before {
+            content: "커뮤니티 카드 영역";
+            color: rgba(255,255,255,0.28);
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            align-self: center;
+            padding-top: 30px;
+        }
+        .seat {
+            min-width: 122px;
+            padding: 8px 10px;
+            border-radius: 14px;
+            background: linear-gradient(180deg, rgba(20,20,20,0.88), rgba(0,0,0,0.72));
+            border: 1px solid rgba(255,255,255,0.16);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.45);
+        }
+        .seat .name::before { content: "● "; color: #2ecc71; font-size: 0.7em; }
+        .seat.folded .name::before { color: #e74c3c; }
+        .seat.active .name::before { color: var(--gold); }
+        .seat .chips {
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: rgba(241,196,15,0.1);
+        }
+        .seat .bet:not(:empty) {
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: rgba(46,204,113,0.1);
+            border: 1px solid rgba(46,204,113,0.22);
+        }
+        .quick-help {
+            position: absolute;
+            left: 18px;
+            bottom: 18px;
+            z-index: 1001;
+            width: 230px;
+            padding: 14px;
+            border-radius: 16px;
+            background: rgba(0,0,0,0.55);
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+            color: #cfcfcf;
+            font-size: 0.82rem;
+            line-height: 1.55;
+        }
+        .quick-help strong { color: var(--gold); display: block; margin-bottom: 4px; }
+        .controls {
+            background: linear-gradient(180deg, rgba(10,10,10,0.92), rgba(0,0,0,0.82));
+            border: 1px solid rgba(241,196,15,0.32);
+            box-shadow: 0 14px 32px rgba(0,0,0,0.6);
+        }
+
+
+
+        /* 추가 기능: 새 게임 버튼, 난이도 선택, AI 행동 말풍선, 모바일 세로 전용 배치 */
+        .hud-action-btn {
+            border: 1px solid rgba(241,196,15,0.5);
+            background: linear-gradient(135deg, rgba(241,196,15,0.95), rgba(243,156,18,0.92));
+            color: #111;
+            font-weight: 900;
+            border-radius: 999px;
+            padding: 6px 12px;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+        }
+        .hud-action-btn:hover { filter: brightness(1.08); }
+        .difficulty-box {
+            margin: 18px auto 0;
+            max-width: 420px;
+            padding: 14px;
+            border-radius: 16px;
+            background: rgba(0,0,0,0.32);
+            border: 1px solid rgba(241,196,15,0.22);
+            display: grid;
+            gap: 8px;
+            color: #ddd;
+            text-align: left;
+        }
+        .difficulty-box label {
+            color: var(--gold);
+            font-weight: 800;
+            font-size: 0.95rem;
+        }
+        #difficulty-select {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.16);
+            background: rgba(15,15,15,0.9);
+            color: #fff;
+            font-weight: 700;
+            outline: none;
+        }
+        .difficulty-help {
+            color: #aaa;
+            font-size: 0.82rem;
+            line-height: 1.45;
+        }
+        .action-bubble {
+            position: absolute;
+            top: -42px;
+            left: 50%;
+            transform: translateX(-50%) translateY(8px) scale(0.92);
+            padding: 7px 13px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, rgba(241,196,15,0.98), rgba(255,255,255,0.88));
+            color: #111;
+            font-size: 0.85rem;
+            font-weight: 900;
+            letter-spacing: 0.04em;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.45);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 40;
+            white-space: nowrap;
+        }
+        .action-bubble.show {
+            animation: action-pop 1.05s ease-out forwards;
+        }
+        @keyframes action-pop {
+            0% { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.86); }
+            18% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1.06); }
+            70% { opacity: 1; transform: translateX(-50%) translateY(-4px) scale(1); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-18px) scale(0.95); }
+        }
+        .mobile-turn-panel {
+            display: none;
+            position: absolute;
+            left: 50%;
+            bottom: 92px;
+            transform: translateX(-50%);
+            z-index: 1001;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(0,0,0,0.58);
+            border: 1px solid rgba(241,196,15,0.25);
+            color: #ddd;
+            font-size: 0.78rem;
+            white-space: nowrap;
+        }
+        .mobile-turn-panel strong { color: var(--gold); }
+
+        @media (max-width: 600px) and (orientation: portrait) {
+            body { overflow-x: hidden; }
+            #main-container { height: 100dvh; }
+            #game-area {
+                align-items: center;
+                justify-content: center;
+                padding-top: 64px;
+                padding-bottom: 156px;
+                overflow: hidden;
+            }
+            .game-hud {
+                top: 8px;
+                left: 8px;
+                right: 8px;
+                transform: none;
+                max-width: none;
+                width: auto;
+                justify-content: center;
+                flex-wrap: wrap;
+                border-radius: 16px;
+                padding: 7px;
+            }
+            .hud-pill { font-size: 0.68rem; padding: 4px 7px; }
+            .hud-action-btn { padding: 5px 9px; font-size: 0.72rem; }
+            #log-toggle { top: 88px; left: 10px; font-size: 1.1em; padding: 4px 9px; }
+            #rank-guide-toggle { top: 88px; right: 10px; padding: 6px 9px; font-size: 0.75rem; }
+            .table {
+                width: 92vw;
+                height: 26vh;
+                min-height: 185px;
+                margin: 38px 0 128px 0;
+                border-radius: 90px;
+            }
+            .table::before {
+                bottom: 26px;
+                font-size: 0.78rem;
+                letter-spacing: 0.1em;
+                opacity: 0.9;
+            }
+            .table::after { inset: 12px; border-radius: 80px; }
+            .pot-area { padding: 5px 11px; margin-bottom: 8px; font-size: 0.86rem; min-width: 112px; }
+            .board { min-width: 182px; min-height: 58px; padding: 6px; gap: 5px; }
+            .board:empty::before { font-size: 0.72rem; padding-top: 20px; }
+            .card { width: 9.4vw; max-width: 42px; }
+            .seat {
+                min-width: 88px;
+                max-width: 108px;
+                padding: 5px 6px;
+                border-radius: 12px;
+                gap: 1px;
+            }
+            .seat .name { font-size: 0.68em; }
+            .seat .chips, .seat .bet, .seat .last-action { font-size: 0.64em; }
+            .player-cards { gap: 3px; margin-top: 3px; }
+            #seat-2 { top: -104px; left: 50%; transform: translateX(-50%); }
+            #seat-0 { bottom: -132px; left: 50%; transform: translateX(-50%); }
+            #seat-1 { left: 4px; top: 50%; transform: translateY(-50%); }
+            #seat-3 { right: 4px; top: 50%; transform: translateY(-50%); }
+            #seat-0.active { transform: translateX(-50%) scale(1.04); }
+            #seat-2.active { transform: translateX(-50%) scale(1.04); }
+            #seat-1.active, #seat-3.active { transform: translateY(-50%) scale(1.04); }
+            #seat-0.winner { transform: translateX(-50%) scale(1.08); }
+            #seat-2.winner { transform: translateX(-50%) scale(1.08); }
+            #seat-1.winner, #seat-3.winner { transform: translateY(-50%) scale(1.08); }
+            .controls {
+                bottom: 8px;
+                width: calc(100vw - 16px);
+                max-width: none;
+                padding: 8px;
+                gap: 6px;
+                border-radius: 18px;
+            }
+            .controls button { flex: 1 1 42%; padding: 10px 8px; font-size: 0.82rem; }
+            .controls > div { width: 100%; padding-left: 0 !important; border-left: none !important; justify-content: center; gap: 8px !important; }
+            #raise-slider { width: 45vw !important; }
+            #raise-input { width: 76px !important; }
+            .mobile-turn-panel { display: block; }
+            .action-bubble { top: -34px; font-size: 0.72rem; padding: 5px 10px; }
+            #rank-guide { width: calc(100vw - 24px); right: 12px; top: 128px; transform: translateX(110%); }
+            #rank-guide.show { transform: translateX(0); }
+        }
+
+
         /* 반응형 모바일 쿼리 */
+
+
+
+        @media (max-width: 900px) {
+            .game-hud { top: 58px; max-width: 92vw; overflow-x: auto; justify-content: flex-start; }
+            .quick-help, .decor-card, .decor-chip, .table-light { display: none; }
+            .board { min-width: 260px; padding: 8px; }
+        }
+        @media (max-width: 600px) {
+            .game-hud { font-size: 0.75rem; gap: 6px; padding: 6px; }
+            .hud-pill { padding: 4px 8px; }
+            .table::before { bottom: 28px; font-size: 0.95rem; }
+            .board { min-width: 210px; min-height: 72px; }
+            .seat { min-width: 102px; padding: 6px 7px; }
+        }
+
+        /* 시작 화면 */
+        .game-hidden { display: none !important; }
+
+        #intro-screen {
+            min-height: 100dvh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            background:
+                radial-gradient(circle at top, rgba(241, 196, 15, 0.16), transparent 32%),
+                radial-gradient(circle at bottom left, rgba(16, 122, 53, 0.35), transparent 38%),
+                linear-gradient(135deg, #111 0%, #1a1a1a 55%, #0b2615 100%);
+        }
+
+        .intro-card {
+            width: min(920px, 100%);
+            background: rgba(0, 0, 0, 0.72);
+            border: 1px solid rgba(241, 196, 15, 0.35);
+            border-radius: 28px;
+            padding: 38px;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.55);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intro-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.06), transparent);
+            transform: translateX(-100%);
+            animation: intro-shine 5s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes intro-shine {
+            0% { transform: translateX(-100%); }
+            35%, 100% { transform: translateX(100%); }
+        }
+
+        .intro-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 14px;
+            border: 1px solid rgba(241,196,15,0.45);
+            border-radius: 999px;
+            color: var(--gold);
+            background: rgba(241,196,15,0.08);
+            font-size: 0.9rem;
+            margin-bottom: 18px;
+        }
+
+        .intro-title {
+            margin: 0;
+            font-size: clamp(2.2rem, 6vw, 5rem);
+            line-height: 1;
+            color: white;
+            letter-spacing: -2px;
+            text-shadow: 0 8px 24px rgba(0,0,0,0.55);
+        }
+
+        .intro-title span { color: var(--gold); }
+
+        .intro-desc {
+            max-width: 720px;
+            margin: 22px auto 0;
+            color: #d7d7d7;
+            font-size: clamp(1rem, 2.2vw, 1.22rem);
+            line-height: 1.7;
+        }
+
+        .intro-features {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin: 32px 0;
+        }
+
+        .intro-feature {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 18px 12px;
+            color: #eee;
+            font-weight: 700;
+        }
+
+        .intro-feature small {
+            display: block;
+            margin-top: 6px;
+            color: #aaa;
+            font-weight: 400;
+            font-size: 0.78rem;
+        }
+
+        .intro-actions {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 26px;
+        }
+
+        .intro-btn {
+            border: none;
+            border-radius: 999px;
+            padding: 15px 30px;
+            font-size: 1.08rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+        }
+
+        .intro-btn:hover { transform: translateY(-2px); }
+        .intro-btn:active { transform: scale(0.97); }
+
+        #btn-start-game {
+            background: linear-gradient(135deg, #f1c40f, #f39c12);
+            color: #111;
+            box-shadow: 0 10px 30px rgba(241,196,15,0.25);
+        }
+
+        #btn-intro-rules {
+            background: rgba(255,255,255,0.08);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .intro-notice {
+            margin: 28px auto 0;
+            max-width: 720px;
+            color: #aaa;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+
         @media (max-width: 900px) {
             .mobile-hide-ad { display: none !important; }
             #log-container { position: absolute; z-index: 2000; height: 100%; box-shadow: 5px 0 15px rgba(0,0,0,0.5); background: rgba(34, 34, 34, 0.95); width: 280px; }
-            .table { width: 85vw; height: 40vh; border-width: 10px; }
-            .seat { padding: 4px 8px; font-size: 0.8em; }
-            #seat-0 { bottom: -80px; } #seat-1 { left: -80px; } #seat-2 { top: -75px; } #seat-3 { right: -80px; }
+            .table { width: 74vw; height: 38vh; border-width: 10px; margin-top: 205px; margin-bottom: 270px; }
+            .seat { padding: 4px 8px; font-size: 0.8em; min-width: 118px; }
+            #seat-0 { bottom: -205px; }
+            #seat-1 { left: -138px; top: 50%; }
+            #seat-2 { top: -178px; }
+            #seat-3 { right: -138px; top: 50%; }
             .controls button { padding: 8px 12px; font-size: 0.9em; }
         }
 
         @media (max-width: 600px) {
-            .table { width: 90vw; height: 30vh; border-radius: 100px; }
-            .seat .name { font-size: 0.8em; } .seat .chips { font-size: 0.75em; }
-            #seat-0 { bottom: -70px; } #seat-1 { left: -40px; top: 20%; } #seat-2 { top: -65px; } #seat-3 { right: -40px; top: 20%; }
+            #intro-screen { padding: 24px 14px; }
+            .intro-card { padding: 28px 18px; border-radius: 22px; }
+            .intro-features { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .intro-feature { padding: 14px 8px; font-size: 0.9rem; }
+            .intro-actions { flex-direction: column; }
+            .intro-btn { width: 100%; }
+            .table { width: 92vw; height: 28vh; border-radius: 100px; margin-top: 215px; margin-bottom: 260px; }
+            .seat { min-width: 96px; padding: 4px 6px; gap: 1px; }
+            .seat .name { font-size: 0.72em; } .seat .chips { font-size: 0.68em; }
+            .seat .bet, .seat .last-action { font-size: 0.68em; }
+            #seat-0 { bottom: -205px; left: 50%; transform: translateX(-50%); }
+            #seat-1 { top: -86px; left: 4%; transform: none; }
+            #seat-2 { top: -182px; left: 50%; transform: translateX(-50%); }
+            #seat-3 { top: -86px; right: 4%; transform: none; }
+            #seat-0.active { transform: translateX(-50%) scale(1.04); }
+            #seat-1.active { transform: scale(1.04); }
+            #seat-2.active { transform: translateX(-50%) scale(1.04); }
+            #seat-3.active { transform: scale(1.04); }
+            #seat-0.winner { transform: translateX(-50%) scale(1.08); }
+            #seat-1.winner { transform: scale(1.08); }
+            #seat-2.winner { transform: translateX(-50%) scale(1.08); }
+            #seat-3.winner { transform: scale(1.08); }
             .controls { bottom: 10px; padding: 8px; }
-            .card { width: 12vw; } .card-front, .card-back { font-size: 0.7em; }
+            .board { min-width: 260px; padding: 8px 10px; }
+            .card { width: 10vw; max-width: 44px; } .card-front, .card-back { font-size: 0.7em; }
             #raise-slider { width: 70px !important; } #raise-input { width: 60px !important; }
         }
     </style>
@@ -296,9 +889,42 @@
 <body>
     <h1 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">텍사스 홀덤 2D - 무료 온라인 포커 게임</h1>
 
-    <div id="main-container">
+    <div id="intro-screen">
+        <div class="intro-card">
+            <div class="intro-badge">♠ 무료 홀덤 연습 게임</div>
+            <h2 class="intro-title">텍사스 홀덤 <span>2D</span></h2>
+            <p class="intro-desc">
+                AI 플레이어 3명과 함께 텍사스 홀덤을 연습해보세요.
+                가입이나 설치 없이 바로 플레이할 수 있고, 실제 현금 베팅이나 환전은 없는 순수 오락용 시뮬레이션 게임입니다.
+            </p>
+            <div class="intro-features" aria-label="게임 특징">
+                <div class="intro-feature">바로 플레이<small>회원가입 없이 시작</small></div>
+                <div class="intro-feature">AI 대전<small>3명의 AI와 승부</small></div>
+                <div class="intro-feature">족보 제공<small>초보자도 쉽게 확인</small></div>
+                <div class="intro-feature">무료 게임<small>현금 베팅 없음</small></div>
+            </div>
+            <div class="difficulty-box">
+                <label for="difficulty-select">AI 난이도 선택</label>
+                <select id="difficulty-select">
+                    <option value="easy">쉬움 - 콜/체크가 많고 레이즈가 적음</option>
+                    <option value="normal" selected>보통 - 기본 밸런스</option>
+                    <option value="aggressive">공격적 AI - 레이즈와 블러핑이 많음</option>
+                </select>
+                <div class="difficulty-help">처음이면 쉬움이나 보통을 추천합니다. 공격적 AI는 판돈을 자주 올려서 게임 속도가 빨라집니다.</div>
+            </div>
+            <div class="intro-actions">
+                <button id="btn-start-game" class="intro-btn">게임 시작</button>
+                <button id="btn-intro-rules" class="intro-btn">게임 설명 보기</button>
+            </div>
+            <p class="intro-notice">
+                ⚠️ 본 게임은 재미와 연습을 위한 무료 웹게임입니다. 게임 내 칩은 실제 현금 가치가 없으며, 베팅이나 환전 기능을 제공하지 않습니다.
+            </p>
+        </div>
+    </div>
+
+    <div id="main-container" class="game-hidden">
         <div id="log-container" class="collapsed">
-            <div id="log-header">Game Log</div>
+            <div id="log-header">게임 기록</div>
             <div id="volume-container">
                 <button id="bgm-toggle-btn" title="배경음악 켜기/끄기">🔊</button>
                 <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.5">
@@ -309,7 +935,7 @@
                 <ins class="adsbygoogle"
                      style="display:block"
                      data-ad-client="ca-pub-8558506271457542"
-                     data-ad-slot="1234567890"
+                     data-ad-slot="1234567890" data-note="애드센스에서 발급받은 실제 광고 단위 ID로 교체하세요"
                      data-ad-format="auto"
                      data-full-width-responsive="true"></ins>
                 <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
@@ -318,20 +944,40 @@
 
         <div id="game-area">
             <button id="log-toggle" title="로그 창 열기/닫기">☰</button>
-            <button id="rank-guide-toggle">Hand Ranks</button>
+            <button id="rank-guide-toggle">족보 보기</button>
+
+            <div class="game-hud" aria-label="게임 상태">
+                <div class="hud-pill">라운드 <strong id="round-count">1</strong></div>
+                <div class="hud-pill">단계 <strong id="phase-badge">프리플랍</strong></div>
+                <div class="hud-pill">턴 <strong id="active-player-label">대기 중</strong></div>
+                <div class="hud-pill">딜러 <strong id="dealer-label">-</strong></div>
+                <div class="hud-pill">난이도 <strong id="difficulty-label">보통</strong></div>
+                <button id="btn-new-game" class="hud-action-btn" type="button">새 게임</button>
+            </div>
+            <div class="mobile-turn-panel">현재 턴: <strong id="mobile-turn-label">대기 중</strong></div>
+            <div class="table-light left"></div>
+            <div class="table-light right"></div>
+            <div class="decor-card c1">A♠</div>
+            <div class="decor-card c2 red">K♥</div>
+            <div class="decor-chip ch1"></div>
+            <div class="decor-chip ch2"></div>
+            <div class="quick-help">
+                <strong>빠른 안내</strong>
+                체크는 추가 베팅 없이 넘기기, 콜은 같은 금액 맞추기, 레이즈는 판돈 올리기입니다.
+            </div>
         
             <div id="rank-guide">
-                <h3>Hand Rankings</h3>
-                <div class="rank-item"><div class="rank-info"><span class="rank-name">Royal Flush</span><span class="rank-desc">같은 무늬 A-K-Q-J-10</span></div><span class="level">9</span></div>
-                <div class="rank-item"><div class="rank-info"><span class="rank-name">Straight Flush</span><span class="rank-desc">같은 무늬 연속된 숫자 5장</span></div><span class="level">8</span></div>
-                <div class="rank-item"><div class="rank-info"><span class="rank-name">Four of a Kind</span><span class="rank-desc">같은 숫자 4장 (포카드)</span></div><span class="level">7</span></div>
-                <div class="rank-item"><div class="rank-info"><span class="rank-name">Full House</span><span class="rank-desc">3장 + 2장 (트리플+원페어)</span></div><span class="level">6</span></div>
-                <div class="rank-item"><div class="rank-info"><span class="rank-name">Flush</span><span class="rank-desc">무늬가 모두 같은 카드 5장</span></div><span class="level">5</span></div>
-                <div class="rank-item"><div class="rank-info"><span class="rank-name">Straight</span><span class="rank-desc">연속된 숫자 5장</span></div><span class="level">4</span></div>
-                <div class="rank-item"><div class="rank-info"><span class="rank-name">Three of a Kind</span><span class="rank-desc">같은 숫자 3장 (트리플)</span></div><span class="level">3</span></div>
-                <div class="rank-item"><div class="rank-info"><span class="rank-name">Two Pair</span><span class="rank-desc">같은 숫자 2장씩 두 쌍</span></div><span class="level">2</span></div>
-                <div class="rank-item"><div class="rank-info"><span class="rank-name">One Pair</span><span class="rank-desc">같은 숫자 2장</span></div><span class="level">1</span></div>
-                <div class="rank-item"><div class="rank-info"><span class="rank-name">High Card</span><span class="rank-desc">조합 없음, 높은 숫자</span></div><span class="level">0</span></div>
+                <h3>포커 족보</h3>
+                <div class="rank-item"><div class="rank-info"><span class="rank-name">로열 플러시</span><span class="rank-desc">같은 무늬 A-K-Q-J-10</span></div><span class="level">9</span></div>
+                <div class="rank-item"><div class="rank-info"><span class="rank-name">스트레이트 플러시</span><span class="rank-desc">같은 무늬 연속된 숫자 5장</span></div><span class="level">8</span></div>
+                <div class="rank-item"><div class="rank-info"><span class="rank-name">포카드</span><span class="rank-desc">같은 숫자 4장 (포카드)</span></div><span class="level">7</span></div>
+                <div class="rank-item"><div class="rank-info"><span class="rank-name">풀 하우스</span><span class="rank-desc">3장 + 2장 (트리플+원페어)</span></div><span class="level">6</span></div>
+                <div class="rank-item"><div class="rank-info"><span class="rank-name">플러시</span><span class="rank-desc">무늬가 모두 같은 카드 5장</span></div><span class="level">5</span></div>
+                <div class="rank-item"><div class="rank-info"><span class="rank-name">스트레이트</span><span class="rank-desc">연속된 숫자 5장</span></div><span class="level">4</span></div>
+                <div class="rank-item"><div class="rank-info"><span class="rank-name">트리플</span><span class="rank-desc">같은 숫자 3장 (트리플)</span></div><span class="level">3</span></div>
+                <div class="rank-item"><div class="rank-info"><span class="rank-name">투페어</span><span class="rank-desc">같은 숫자 2장씩 두 쌍</span></div><span class="level">2</span></div>
+                <div class="rank-item"><div class="rank-info"><span class="rank-name">원페어</span><span class="rank-desc">같은 숫자 2장</span></div><span class="level">1</span></div>
+                <div class="rank-item"><div class="rank-info"><span class="rank-name">하이카드</span><span class="rank-desc">조합 없음, 높은 숫자</span></div><span class="level">0</span></div>
             </div>
 
             <div class="table">
@@ -341,37 +987,37 @@
                 <div class="board" id="board"></div>
 
                 <div class="seat" id="seat-2">
-                    <div class="folded-label">FOLDED</div><div class="winner-badge">WINNER</div><div class="dealer-btn">D</div>
-                    <div class="name">AI Player 2</div><div class="chips">₩ <span class="chip-count">10000</span></div>
+                    <div class="folded-label">포기</div><div class="winner-badge">승리</div><div class="dealer-btn">D</div><div class="action-bubble"></div>
+                    <div class="name">AI 플레이어 2</div><div class="chips">₩ <span class="chip-count">10000</span></div>
                     <div class="player-cards" id="cards-2"></div><div class="last-action"></div><div class="bet"></div>
                 </div>
                 <div class="seat" id="seat-1">
-                    <div class="folded-label">FOLDED</div><div class="winner-badge">WINNER</div><div class="dealer-btn">D</div>
-                    <div class="name">AI Player 1</div><div class="chips">₩ <span class="chip-count">10000</span></div>
+                    <div class="folded-label">포기</div><div class="winner-badge">승리</div><div class="dealer-btn">D</div><div class="action-bubble"></div>
+                    <div class="name">AI 플레이어 1</div><div class="chips">₩ <span class="chip-count">10000</span></div>
                     <div class="player-cards" id="cards-1"></div><div class="last-action"></div><div class="bet"></div>
                 </div>
                 <div class="seat" id="seat-3">
-                    <div class="folded-label">FOLDED</div><div class="winner-badge">WINNER</div><div class="dealer-btn">D</div>
-                    <div class="name">AI Player 3</div><div class="chips">₩ <span class="chip-count">10000</span></div>
+                    <div class="folded-label">포기</div><div class="winner-badge">승리</div><div class="dealer-btn">D</div><div class="action-bubble"></div>
+                    <div class="name">AI 플레이어 3</div><div class="chips">₩ <span class="chip-count">10000</span></div>
                     <div class="player-cards" id="cards-3"></div><div class="last-action"></div><div class="bet"></div>
                 </div>
                 <div class="seat" id="seat-0">
-                    <div class="folded-label">FOLDED</div><div class="winner-badge">WINNER</div><div class="dealer-btn">D</div>
-                    <div class="name">You</div><div class="chips">₩ <span class="chip-count">10000</span></div>
+                    <div class="folded-label">포기</div><div class="winner-badge">승리</div><div class="dealer-btn">D</div><div class="action-bubble"></div>
+                    <div class="name">나</div><div class="chips">₩ <span class="chip-count">10000</span></div>
                     <div class="player-cards" id="cards-0"></div><div class="last-action"></div><div class="bet"></div>
                 </div>
             </div>
 
             <div class="controls" id="controls">
-                <button id="btn-fold">Fold</button>
-                <button id="btn-check">Check</button>
-                <button id="btn-call">Call (<span id="call-amount">0</span>)</button>
+                <button id="btn-fold">포기</button>
+                <button id="btn-check">체크</button>
+                <button id="btn-call">콜 (<span id="call-amount">0</span>)</button>
                 <div style="display: flex; align-items: center; gap: 10px; padding-left: 10px; border-left: 1px solid #444;">
                     <div style="display: flex; flex-direction: column; gap: 2px;">
                         <input type="range" id="raise-slider" style="width: 100px;">
                         <input type="number" id="raise-input" style="width: 80px; background: #333; color: white; border: 1px solid #555; padding: 2px 5px; border-radius: 3px; font-size: 0.8em;">
                     </div>
-                    <button id="btn-raise">Raise</button>
+                    <button id="btn-raise">레이즈</button>
                 </div>
             </div>
         </div>
@@ -391,14 +1037,14 @@
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="ca-pub-8558506271457542"
-             data-ad-slot="0987654321"
+             data-ad-slot="0987654321" data-note="애드센스에서 발급받은 실제 광고 단위 ID로 교체하세요"
              data-ad-format="horizontal"
              data-full-width-responsive="true"></ins>
         <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
 
     <section id="info-section">
-        <h2>How to Play Texas Hold'em</h2>
+        <h2>텍사스 홀덤 플레이 방법</h2>
         <div class="guide-grid">
             <div>
                 <h3>텍사스 홀덤이란?</h3>
@@ -443,7 +1089,7 @@
             constructor() {
                 this.enabled = false;
                 this.masterVolume = 0.5;
-                this.bgm = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3'); 
+                this.bgm = new Audio('bgm.mp3'); // 같은 폴더에 bgm.mp3를 넣으면 배경음악이 재생됩니다. 
                 this.bgm.loop = true;
                 this.bgm.volume = this.masterVolume;
             }
@@ -602,8 +1248,8 @@
             }
 
             static getRankName(rankLevel) {
-                const names = ['High Card', 'Pair', 'Two Pair', 'Three of a Kind', 'Straight', 'Flush', 'Full House', 'Four of a Kind', 'Straight Flush', 'Royal Flush'];
-                return names[rankLevel];
+                const names = ['하이카드', '원페어', '투페어', '트리플', '스트레이트', '플러시', '풀 하우스', '포카드', '스트레이트 플러시', '로열 플러시'];
+                return names[rankLevel] || '판정 불가';
             }
         }
 
@@ -624,16 +1270,19 @@
         }
 
         class TexasHoldem {
-            constructor() {
+            constructor(difficulty = 'normal') {
+                this.aiDifficulty = difficulty;
+                this.difficultyNames = { easy: '쉬움', normal: '보통', aggressive: '공격적' };
                 this.players = [
-                    new Player(0, "You", true),
-                    new Player(1, "AI Player 1"),
-                    new Player(2, "AI Player 2"),
-                    new Player(3, "AI Player 3")
+                    new Player(0, "나", true),
+                    new Player(1, "AI 플레이어 1"),
+                    new Player(2, "AI 플레이어 2"),
+                    new Player(3, "AI 플레이어 3")
                 ];
                 this.sbAmount = 50;
                 this.bbAmount = 100;
                 this.dealerIdx = -1; 
+                this.roundNo = 0;
                 
                 this.deck = new Deck();
                 this.board = [];
@@ -649,15 +1298,8 @@
                 this.sounds = new SoundManager();
 
                 this.bindUI();
-                this.log("환영합니다! <b>화면을 한 번 클릭</b>하면 배경음악과 효과음이 활성화됩니다.", "log-action");
-                setTimeout(() => this.startRound(), 1500);
-
-                const enableAudio = () => {
-                    this.sounds.enable();
-                    this.log("사운드가 활성화되었습니다.");
-                    window.removeEventListener('click', enableAudio);
-                };
-                window.addEventListener('click', enableAudio);
+                this.log("환영합니다! 게임이 곧 시작됩니다.", "log-action");
+                setTimeout(() => this.startRound(), 700);
             }
 
             bindUI() {
@@ -666,6 +1308,8 @@
                 document.getElementById('btn-call').onclick = () => this.handleAction('call');
                 document.getElementById('btn-raise').onclick = () => this.handleAction('raise');
                 document.getElementById('btn-restart').onclick = () => this.restartGame();
+                const newGameBtn = document.getElementById('btn-new-game');
+                if (newGameBtn) newGameBtn.onclick = () => this.restartGame();
                 
                 document.getElementById('btn-continue').onclick = () => {
                     document.getElementById('victory-overlay').style.display = 'none';
@@ -697,6 +1341,66 @@
                 };
             }
 
+            getActionLabel(action) {
+                const labels = {
+                    fold: '포기',
+                    check: '체크',
+                    call: '콜',
+                    raise: '레이즈'
+                };
+                return labels[action] || action;
+            }
+
+            showActionBubble(player, label) {
+                const seatEl = document.getElementById(`seat-${player.id}`);
+                if (!seatEl) return;
+                const bubble = seatEl.querySelector('.action-bubble');
+                if (!bubble) return;
+                bubble.textContent = label;
+                bubble.classList.remove('show');
+                void bubble.offsetWidth;
+                bubble.classList.add('show');
+                clearTimeout(bubble._hideTimer);
+                bubble._hideTimer = setTimeout(() => bubble.classList.remove('show'), 1100);
+            }
+
+            adjustAIProfile(checkProb, callProb, foldProb, raiseBias = 0) {
+                if (this.aiDifficulty === 'easy') {
+                    return {
+                        checkProb: Math.min(0.97, checkProb + 0.10),
+                        callProb: Math.max(0.18, callProb - 0.10),
+                        foldProb: Math.min(0.75, foldProb + 0.08),
+                        raiseBias: -0.16
+                    };
+                }
+                if (this.aiDifficulty === 'aggressive') {
+                    return {
+                        checkProb: Math.max(0.05, checkProb - 0.18),
+                        callProb: Math.min(0.98, callProb + 0.10),
+                        foldProb: Math.max(0.03, foldProb - 0.12),
+                        raiseBias: 0.22
+                    };
+                }
+                return { checkProb, callProb, foldProb, raiseBias };
+            }
+
+            evaluatePreflopStrength(cards) {
+                if (!cards || cards.length < 2) return 0;
+                const [a, b] = cards;
+                const high = Math.max(a.value, b.value);
+                const low = Math.min(a.value, b.value);
+                let score = high * 2;
+
+                if (a.value === b.value) score += 45;          // 포켓 페어
+                if (a.suit === b.suit) score += 8;             // 수딧
+                if (Math.abs(a.value - b.value) === 1) score += 7; // 커넥터
+                if (Math.abs(a.value - b.value) === 2) score += 3;
+                if (high >= 14 && low >= 10) score += 15;      // 브로드웨이 조합
+                if (low <= 7 && high < 11) score -= 6;         // 낮은 카드 조합 약화
+
+                return score;
+            }
+
             checkGameOver() {
                 if (this.players[0].chips <= 0) {
                     clearTimeout(this.nextRoundTimeout);
@@ -718,6 +1422,7 @@
             restartGame() {
                 clearTimeout(this.nextRoundTimeout); 
                 this.players.forEach(p => p.chips = 10000);
+                this.roundNo = 0;
                 document.getElementById('game-over-overlay').style.display = 'none';
                 document.getElementById('log').innerHTML = '';
                 this.log("게임을 재시작합니다. 행운을 빕니다!");
@@ -742,6 +1447,21 @@
 
             updateUI() {
                 document.getElementById('pot-amount').innerText = this.pot;
+
+                const phaseNames = ['프리플랍', '플랍', '턴', '리버', '쇼다운'];
+                const roundEl = document.getElementById('round-count');
+                const phaseEl = document.getElementById('phase-badge');
+                const activeEl = document.getElementById('active-player-label');
+                const dealerEl = document.getElementById('dealer-label');
+                const diffEl = document.getElementById('difficulty-label');
+                const mobileTurnEl = document.getElementById('mobile-turn-label');
+                const activeName = (this.activeGame && this.players[this.currentTurnIdx]) ? this.players[this.currentTurnIdx].name : '대기 중';
+                if (roundEl) roundEl.innerText = this.roundNo || 1;
+                if (phaseEl) phaseEl.innerText = phaseNames[this.phaseIdx] || '대기';
+                if (activeEl) activeEl.innerText = activeName;
+                if (mobileTurnEl) mobileTurnEl.innerText = activeName;
+                if (dealerEl) dealerEl.innerText = this.players[this.dealerIdx] ? this.players[this.dealerIdx].name : '-';
+                if (diffEl) diffEl.innerText = this.difficultyNames[this.aiDifficulty] || '보통';
                 
                 const boardEl = document.getElementById('board');
                 if (this.board.length === 0) {
@@ -769,7 +1489,7 @@
 
                     if (p.isWinner) seatEl.classList.add('winner');
                     else seatEl.classList.remove('winner');
-                    seatEl.querySelector('.winner-badge').innerText = p.winMessage || 'WINNER';
+                    seatEl.querySelector('.winner-badge').innerText = p.winMessage || '승리';
 
                     seatEl.classList.remove('active', 'has-button');
                     if (this.dealerIdx === p.id) seatEl.classList.add('has-button');
@@ -788,6 +1508,7 @@
             }
 
             startRound() {
+                this.roundNo++;
                 clearTimeout(this.nextRoundTimeout);
                 clearTimeout(this.dealTimeout);
 
@@ -812,7 +1533,7 @@
                     p.folded = (p.chips === 0); 
                 });
 
-                this.log(`ROUND START (Dealer: ${this.players[this.dealerIdx].name})`, 'log-alert');
+                this.log(`라운드 시작 (딜러: ${this.players[this.dealerIdx].name})`, 'log-alert');
                 
                 let sbIdx = (this.dealerIdx + 1) % 4;
                 let bbIdx = (this.dealerIdx + 2) % 4;
@@ -932,7 +1653,7 @@
                 if (this.actionsNeeded <= 0 || !canAnyoneAct) {
                     if (!canAnyoneAct && !this.allInRunOut && this.phaseIdx < 4 && this.players.filter(p => !p.folded).length > 1) {
                         this.allInRunOut = true;
-                        this.log("\n--- ALL-IN! ---", "log-alert");
+                        this.log("\n--- 올인! ---", "log-alert");
                     }
                     this.nextPhase();
                     return;
@@ -957,49 +1678,69 @@
             executeAI(player) {
                 let diff = this.highestBet - player.betAmount;
                 let action = 'fold';
-                
-                const bestHandScore = HandEvaluator.getBestHand(player.cards, this.board);
-                const rankLevel = bestHandScore[0]; 
 
                 let r = Math.random();
-                let checkProb, callProb, foldProb, raiseProb;
+                let checkProb, callProb, foldProb;
 
-                if (rankLevel >= 6) { 
-                    checkProb = 0.1; callProb = 0.1; foldProb = 0.01; raiseProb = 0.89;
-                } else if (rankLevel >= 4) { 
-                    checkProb = 0.3; callProb = 0.3; foldProb = 0.05; raiseProb = 0.65;
-                } else if (rankLevel >= 1) { 
-                    checkProb = 0.6; callProb = 0.6; foldProb = 0.15; raiseProb = 0.25; 
-                } else { 
-                    checkProb = 0.8; callProb = 0.7; foldProb = 0.25; raiseProb = 0.05;
+                // 프리플랍은 5장 조합 평가가 불가능하므로 시작 패 전용 점수로 판단합니다.
+                if (this.phaseIdx === 0 || this.board.length < 3) {
+                    const preflopScore = this.evaluatePreflopStrength(player.cards);
+
+                    if (preflopScore >= 65) {
+                        checkProb = 0.10; callProb = 0.95; foldProb = 0.01;
+                    } else if (preflopScore >= 45) {
+                        checkProb = 0.35; callProb = 0.80; foldProb = 0.08;
+                    } else if (preflopScore >= 30) {
+                        checkProb = 0.65; callProb = 0.55; foldProb = 0.25;
+                    } else {
+                        checkProb = 0.85; callProb = 0.30; foldProb = 0.55;
+                    }
+                } else {
+                    const bestHandScore = HandEvaluator.getBestHand(player.cards, this.board);
+                    const rankLevel = bestHandScore[0];
+
+                    if (rankLevel >= 6) {
+                        checkProb = 0.10; callProb = 0.95; foldProb = 0.01;
+                    } else if (rankLevel >= 4) {
+                        checkProb = 0.30; callProb = 0.85; foldProb = 0.05;
+                    } else if (rankLevel >= 1) {
+                        checkProb = 0.60; callProb = 0.60; foldProb = 0.15;
+                    } else {
+                        checkProb = 0.80; callProb = 0.45; foldProb = 0.35;
+                    }
                 }
+
+                const aiProfile = this.adjustAIProfile(checkProb, callProb, foldProb);
+                checkProb = aiProfile.checkProb;
+                callProb = aiProfile.callProb;
+                foldProb = aiProfile.foldProb;
 
                 if (diff === 0) {
-                    if (r < checkProb) action = 'check';
-                    else action = 'raise';
+                    action = (r < checkProb) ? 'check' : 'raise';
                 } else {
                     if (r < callProb) action = 'call';
-                    else if (r < (callProb + foldProb)) action = 'fold';
+                    else if (r < callProb + foldProb) action = 'fold';
                     else action = 'raise';
                 }
 
-                const minRaiseAmountToAdd = this.bbAmount; 
+                if (aiProfile.raiseBias > 0 && action !== 'raise' && Math.random() < aiProfile.raiseBias) {
+                    action = 'raise';
+                }
+                if (aiProfile.raiseBias < 0 && action === 'raise' && Math.random() < Math.abs(aiProfile.raiseBias)) {
+                    action = diff === 0 ? 'check' : 'call';
+                }
+
+                const minRaiseAmountToAdd = this.bbAmount;
 
                 if (action === 'raise') {
                     if (player.chips < diff + minRaiseAmountToAdd) {
-                        if (player.chips >= diff) { 
-                            action = 'call';
-                        } else { 
-                            action = 'fold';
-                        }
+                        action = (player.chips >= diff) ? 'call' : 'fold';
                     }
-                } else if (action === 'call') {
-                    if (player.chips < diff) {
-                        action = 'fold'; 
-                    }
+                } else if (action === 'call' && player.chips < diff) {
+                    action = 'fold';
                 }
 
-                this.handleAction(action, player, rankLevel); 
+                this.handleAction(action, player);
             }
 
             showUserControls() {
@@ -1054,37 +1795,40 @@
                 }
 
                 let diff = this.highestBet - player.betAmount;
-                player.lastAction = action.toUpperCase();
+                player.lastAction = this.getActionLabel(action);
 
                 if (action === 'fold') {
                     player.folded = true;
-                    this.log(`${player.name} <span class="log-alert">Folds</span>`);
+                    this.log(`${player.name} <span class="log-alert">포기</span>`);
                     this.sounds.play('fold');
                     this.actionsNeeded--;
                 } 
                 else if (action === 'check') {
-                    this.log(`${player.name} Checks`);
+                    this.log(`${player.name} 체크`);
                     this.sounds.play('check');
                     this.actionsNeeded--;
                 } 
                 else if (action === 'call') {
                     this.processBet(player, diff);
-                    this.log(`${player.name} <span class="log-action">Calls</span> ${diff}`);
+                    this.log(`${player.name} <span class="log-action">콜</span> ${diff}`);
                     this.actionsNeeded--;
                 } 
                 else if (action === 'raise') {
+                    let aiRaiseMultiplier = this.aiDifficulty === 'aggressive' ? (2 + Math.floor(Math.random() * 4)) : (1 + Math.floor(Math.random() * 3));
+                    if (this.aiDifficulty === 'easy') aiRaiseMultiplier = 1;
                     let raiseTo = isUser ? 
                         parseInt(document.getElementById('raise-input').value) : 
-                        this.highestBet + (this.bbAmount * (1 + Math.floor(Math.random() * 3)));
+                        this.highestBet + (this.bbAmount * aiRaiseMultiplier);
                     
                     if (!isUser) raiseTo = Math.min(raiseTo, player.chips + player.betAmount);
                     
                     let amountToPutIn = raiseTo - player.betAmount;
                     this.processBet(player, amountToPutIn);
-                    this.log(`${player.name} <span class="log-action">Raises</span> to ${player.betAmount}`);
+                    this.log(`${player.name} <span class="log-action">레이즈</span> ${player.betAmount}까지`);
                     this.actionsNeeded = this.players.filter(p => !p.folded && p.chips > 0).length - 1; 
                 }
 
+                this.showActionBubble(player, player.lastAction);
                 this.currentTurnIdx = (this.currentTurnIdx + 1) % 4;
                 this.updateUI();
                 setTimeout(() => this.nextTurn(), 800);
@@ -1102,7 +1846,7 @@
                 this.actionsNeeded = this.players.filter(p => !p.folded && p.chips > 0).length;
 
                 if (this.phaseIdx === 1) { 
-                    this.log(`FLOP`, 'log-alert');
+                    this.log(`플랍`, 'log-alert');
                     for (let i = 0; i < 3; i++) {
                         setTimeout(() => {
                             this.board.push(this.deck.draw());
@@ -1111,17 +1855,17 @@
                         }, i * 300);
                     }
                 } else if (this.phaseIdx === 2) { 
-                    this.log(`TURN`, 'log-alert');
+                    this.log(`턴`, 'log-alert');
                     this.board.push(this.deck.draw());
                     this.sounds.play('card');
                     this.updateUI();
                 } else if (this.phaseIdx === 3) { 
-                    this.log(`RIVER`, 'log-alert');
+                    this.log(`리버`, 'log-alert');
                     this.board.push(this.deck.draw());
                     this.sounds.play('card');
                     this.updateUI();
                 } else if (this.phaseIdx === 4) { 
-                    this.log(`SHOWDOWN`, 'log-alert');
+                    this.log(`쇼다운`, 'log-alert');
                     this.evaluateWinners();
                     return;
                 }
@@ -1135,46 +1879,55 @@
             }
 
             calculatePots() {
-                const activePlayers = this.players.filter(p => !p.folded && p.totalBetInHand > 0);
+                // 팟을 만든 플레이어와 팟을 받을 수 있는 플레이어를 분리합니다.
+                // 폴드한 플레이어가 이미 넣은 칩도 팟 금액에는 포함되어야 하지만,
+                // 승리 후보에서는 제외되어야 실제 홀덤 규칙에 더 가깝습니다.
+                const contributors = this.players.filter(p => p.totalBetInHand > 0);
+                const eligiblePlayers = this.players.filter(p => !p.folded && p.totalBetInHand > 0);
 
-                if (activePlayers.length <= 1) {
-                    return [{ amount: this.pot, eligiblePlayerIds: activePlayers.map(p => p.id) }];
+                if (eligiblePlayers.length <= 1) {
+                    return [{
+                        amount: this.pot,
+                        eligiblePlayerIds: eligiblePlayers.map(p => p.id)
+                    }];
                 }
 
-                const contributionLevels = [...new Set(activePlayers.map(p => p.totalBetInHand))].sort((a, b) => a - b);
+                const contributionLevels = [...new Set(contributors.map(p => p.totalBetInHand))].sort((a, b) => a - b);
                 const pots = [];
-                let chipsAlreadyAccountedFor = 0; 
+                let previousLevel = 0;
 
-                for (let i = 0; i < contributionLevels.length; i++) {
-                    const currentLevel = contributionLevels[i];
-                    const amountToPullFromEachPlayer = currentLevel - chipsAlreadyAccountedFor;
+                for (const level of contributionLevels) {
+                    const amountPerContributor = level - previousLevel;
+                    if (amountPerContributor <= 0) continue;
 
-                    if (amountToPullFromEachPlayer <= 0) continue; 
+                    const contributorsAtThisLevel = contributors.filter(p => p.totalBetInHand >= level);
+                    const eligibleForThisPot = eligiblePlayers.filter(p => p.totalBetInHand >= level);
+                    const potAmount = amountPerContributor * contributorsAtThisLevel.length;
 
-                    const eligiblePlayersForThisPot = activePlayers.filter(p => p.totalBetInHand >= currentLevel);
-                    const potAmount = amountToPullFromEachPlayer * eligiblePlayersForThisPot.length;
+                    if (potAmount > 0 && eligibleForThisPot.length > 0) {
+                        pots.push({
+                            amount: potAmount,
+                            eligiblePlayerIds: eligibleForThisPot.map(p => p.id),
+                            level
+                        });
+                    }
 
-                    pots.push({
-                        amount: potAmount,
-                        eligiblePlayerIds: eligiblePlayersForThisPot.map(p => p.id),
-                        level: currentLevel 
-                    });
-
-                    chipsAlreadyAccountedFor = currentLevel;
+                    previousLevel = level;
                 }
 
                 const totalCalculatedPot = pots.reduce((sum, pot) => sum + pot.amount, 0);
                 if (totalCalculatedPot !== this.pot && pots.length > 0) {
                     pots[pots.length - 1].amount += (this.pot - totalCalculatedPot);
                 }
+
                 return pots;
             }
 
             endRoundEarly(winner) {
                 this.activeGame = false;
-                this.log(`<span class="log-win">${winner.name} wins (Everyone else folded)</span>`);
+                this.log(`<span class="log-win">${winner.name} 승리 (다른 플레이어 모두 포기)</span>`);
                 winner.isWinner = true;
-                winner.winMessage = 'WINNER';
+                winner.winMessage = '승리';
                 
                 const fromEl = document.getElementById('pot-amount');
                 const toEl = document.getElementById(`seat-${winner.id}`);
@@ -1184,8 +1937,8 @@
                 for (const pot of allPots) {
                     if (pot.eligiblePlayerIds.includes(winner.id)) {
                         totalWonByWinner += pot.amount;
-                        const potType = allPots.length > 1 && allPots.indexOf(pot) < allPots.length - 1 ? 'Side Pot' : 'Main Pot';
-                        this.log(`  <span class="log-win">${winner.name} wins ${potType} of ${pot.amount}.</span>`);
+                        const potType = allPots.length > 1 && allPots.indexOf(pot) < allPots.length - 1 ? '사이드 팟' : '메인 팟';
+                        this.log(`  <span class="log-win">${winner.name} ${potType} ${pot.amount} 획득</span>`);
                     }
                 }
                 this.createChipAnimation(fromEl, toEl); 
@@ -1205,7 +1958,7 @@
                 activePlayers.forEach(p => {
                     p.bestHandScore = HandEvaluator.getBestHand(p.cards, this.board);
                     const rankName = HandEvaluator.getRankName(p.bestHandScore[0]);
-                    this.log(`${p.name} shows ${rankName}`);
+                    this.log(`${p.name} 패 공개: ${rankName}`);
                 });
 
                 const allPots = this.calculatePots();
@@ -1230,10 +1983,10 @@
                     if (potWinners.length > 0) {
                         const splitPot = Math.floor(pot.amount / potWinners.length);
                         const rankName = HandEvaluator.getRankName(potBestScore[0]);
-                        const potLabel = allPots.length > 1 ? (index === 0 ? "Main Pot" : `Side Pot ${index}`) : "Pot";
+                        const potLabel = allPots.length > 1 ? (index === 0 ? "메인 팟" : `사이드 팟 ${index}`) : "팟";
 
                         potWinners.forEach(w => {
-                            this.log(`<span class="log-win">${w.name} wins ${potLabel} (${splitPot}) with ${rankName}!</span>`);
+                            this.log(`<span class="log-win">${w.name} ${rankName}으로 ${potLabel} (${splitPot}) 획득!</span>`);
                             this.createChipAnimation(document.getElementById('pot-amount'), document.getElementById(`seat-${w.id}`));
                             w.chips += splitPot;
                             w.isWinner = true;
@@ -1250,22 +2003,29 @@
         }
 
         window.onload = () => {
-            // [보안 기능 복구] 개발자 도구 및 우클릭 방지 로직 (코드 1의 장점)
-            document.addEventListener('contextmenu', e => e.preventDefault()); 
+            let gameInstance = null;
 
-            document.addEventListener('keydown', e => {
-                if (
-                    e.key === 'F12' ||
-                    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
-                    (e.ctrlKey && e.key === 'u')
-                ) {
-                    e.preventDefault();
-                    alert("보안 정책상 개발자 도구를 사용할 수 없습니다.");
-                    return false;
+            const introScreen = document.getElementById('intro-screen');
+            const mainContainer = document.getElementById('main-container');
+            const startButton = document.getElementById('btn-start-game');
+            const rulesButton = document.getElementById('btn-intro-rules');
+            const difficultySelect = document.getElementById('difficulty-select');
+
+            startButton.addEventListener('click', () => {
+                introScreen.style.display = 'none';
+                mainContainer.classList.remove('game-hidden');
+
+                if (!gameInstance) {
+                    const selectedDifficulty = difficultySelect ? difficultySelect.value : 'normal';
+                    gameInstance = new TexasHoldem(selectedDifficulty);
+                    gameInstance.sounds.enable();
+                    gameInstance.log(`시작 버튼을 눌러 사운드가 활성화되었습니다. AI 난이도: ${gameInstance.difficultyNames[selectedDifficulty] || '보통'}`);
                 }
             });
 
-            new TexasHoldem();
+            rulesButton.addEventListener('click', () => {
+                document.getElementById('info-section').scrollIntoView({ behavior: 'smooth' });
+            });
         };
     </script>
 </body>
